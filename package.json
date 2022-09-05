@@ -1,0 +1,17 @@
+{
+  "name": "manga-project-01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "fastify start src/server.mjs --watch --port 8080 --address 0.0.0.0"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^4.5.3",
+    "fastify-cli": "^5.4.1",
+    "jsdom": "^20.0.0"
+  }
+}
