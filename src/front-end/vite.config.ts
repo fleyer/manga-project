@@ -17,7 +17,7 @@ import Shiki from 'markdown-it-shiki'
 export default defineConfig({
   server: {
     proxy: {
-      '/mangas': {
+      '/api/mangas': {
         target: 'http://127.0.0.1:8080',
         changeOrigin: true
       }
