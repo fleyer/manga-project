@@ -5,15 +5,15 @@
           <img class="manga-detail-image" :src="detail.image_link"/>
           <div class="manga-description"></div>
         </div>
-        <!-- <iframe class="manga-player" v-if="detail.current_episode" allowfullscreen="true" width="800" height="500" :src="detail.current_episode.player_link"/> -->
+        <iframe class="manga-player" v-if="detail.current_episode" allowfullscreen="true" width="800" height="500" :src="detail.current_episode.player_link"/>
     </div>
   </section>
 
   <section class="manga-episode-navigator">
-    <ul class="manga-episode-list">
-      <li v-if="detail" v-for="episode in detail.episodes">
+    <ul ref="episodeCarroussel" class="manga-episode-list">
+      <li :ref="setRef" v-if="detail" v-for="episode in detail.episodes" :class="episode.active ? 'manga-episode-active' : ''">
         <router-link :to="`/detail/${episode.id}`" custom v-slot="{ navigate }">
-          <div :class="episode.active ? 'manga-episode-active' : ''" @click="navigate">
+          <div @click="navigate">
             <span>{{episode.episode}}</span>
           </div>
         </router-link>
@@ -30,7 +30,8 @@
 </template>
 
 <script setup lang="ts">
-  import { watchEffect } from 'vue'
+  import { ComponentPublicInstance, watchEffect } from 'vue'
+  import type { Ref } from 'vue'
   import { onBeforeRouteLeave } from 'vue-router';
   import { storeToRefs } from 'pinia';
 
@@ -38,17 +39,29 @@
   const props = defineProps<{ id: string }>()
   const { loadMangaDetail,setMangaDetail,setManga } = mangaStore
   const { detail, nextEpisode } = storeToRefs(mangaStore)
+  const episodeCarroussel : Ref<HTMLDivElement | null>= ref(null)
+  const activeEpisodeElement : Ref<HTMLDivElement[]> = ref([])
+
+  watchEffect(() =>{
+    let target = activeEpisodeElement.value[0]
+
+    target?.scrollIntoView()
+  })
 
   watchEffect(async () => {
-
     loadMangaDetail(props.id)
-
   })
 
   onBeforeRouteLeave(() => {
     setManga(undefined)
     setMangaDetail(undefined)
   })
+
+  function setRef(elem : ComponentPublicInstance<HTMLDivElement>) {
+    elem?.classList.contains('manga-episode-active') && activeEpisodeElement.value.push(elem)
+
+    return elem
+  }
 
 </script>
 
@@ -100,7 +113,7 @@
     margin-left: 10px;
   }
 
-  .manga-episode-list li div.manga-episode-active {
+  .manga-episode-list li.manga-episode-active > div {
     background: lightseagreen;
   }
 </style>
