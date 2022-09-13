@@ -1,17 +1,17 @@
 <template>
   <section>
-    <div class="manga-detail">
+    <div v-if="detail" class="manga-detail">
         <div class="manga-presentation">
           <img class="manga-detail-image" :src="detail.image_link"/>
           <div class="manga-description"></div>
         </div>
-        <iframe class="manga-player" v-if="detail.current_episode" allowfullscreen="true" width="800" height="500" :src="detail.current_episode.player_link"/>
+        <!-- <iframe class="manga-player" v-if="detail.current_episode" allowfullscreen="true" width="800" height="500" :src="detail.current_episode.player_link"/> -->
     </div>
   </section>
 
   <section class="manga-episode-navigator">
     <ul class="manga-episode-list">
-      <li v-for="episode in detail.episodes">
+      <li v-if="detail" v-for="episode in detail.episodes">
         <router-link :to="`/detail/${episode.id}`" custom v-slot="{ navigate }">
           <div :class="episode.active ? 'manga-episode-active' : ''" @click="navigate">
             <span>{{episode.episode}}</span>
@@ -19,7 +19,7 @@
         </router-link>
       </li>
 
-      <li>
+      <li v-if="detail && nextEpisode">
         <router-link :to="`/detail/${nextEpisode.id}`">
           {{nextEpisode.episode}} next >>
         </router-link>
@@ -30,48 +30,25 @@
 </template>
 
 <script setup lang="ts">
-  import { watchEffect, ref, Ref } from 'vue'
-  import { MangaDetail, Episode } from '~/types';
+  import { watchEffect } from 'vue'
   import { onBeforeRouteLeave } from 'vue-router';
+  import { storeToRefs } from 'pinia';
 
+  const mangaStore =  useMangaStore()
   const props = defineProps<{ id: string }>()
-  const detail : Ref<MangaDetail> = ref({})
-  const nextEpisode : Ref<Episode> = ref({})
-  const mangaStore = useMangaStore()
+  const { loadMangaDetail,setMangaDetail,setManga } = mangaStore
+  const { detail, nextEpisode } = storeToRefs(mangaStore)
 
   watchEffect(async () => {
-    const currentEpisode = parseInt(props.id.split('-').slice(-2)[0])
 
-    detail.value = await fetch(`/api/mangas/${props.id}`)
-      .then( r => r.json())
-      .then( detail => ({
-        ...detail,
-        episodes: [ ...detail.episodes.map( e => trackActiveEpisode(currentEpisode,e))]
-      }))
+    loadMangaDetail(props.id)
 
-    nextEpisode.value = next(props.id)
-    mangaStore.setManga(detail.value.title)
   })
 
   onBeforeRouteLeave(() => {
-    mangaStore.setManga(null)
+    setManga(undefined)
+    setMangaDetail(undefined)
   })
-
-  function next(current_episode_id : string ) : Episode {
-    const split = current_episode_id.split('-')
-    const nextId = parseInt(split[split.length - 2]) + 1
-
-    return {
-      episode: nextId,
-      id: [ ...split.slice(0,split.length-2),nextId,split.slice(-1)].join('-')
-    }
-  }
-
-  function trackActiveEpisode(currentEpisodeNumber : number ,episode : Object) : Void {
-    episode.active = currentEpisodeNumber === episode.episode
-
-    return episode
-  }
 
 </script>
 
@@ -123,7 +100,7 @@
     margin-left: 10px;
   }
 
-  .manga-episode-list li.manga-episode-active {
+  .manga-episode-list li div.manga-episode-active {
     background: lightseagreen;
   }
 </style>

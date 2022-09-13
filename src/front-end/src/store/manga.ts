@@ -1,20 +1,23 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { Manga } from '~/types'
+import { Episode, MangaDetail, Manga } from '~/types'
+import type { Ref } from 'vue'
 
 export const useMangaStore = defineStore('manga', () => {
-  const savedManga = ref('')
+  const savedManga : Ref<string | undefined> = ref(undefined)
   const mangas : Manga[] = reactive([])
-
-
+  const nextEpisode : Ref<Episode|undefined> = ref(undefined)
+  const detail : Ref<MangaDetail|undefined> = ref(undefined)
   /**
    * Changes the current manga
    *
    * @param name - new name to set
    */
-  function setManga(name: string) {
-
-
+  function setManga(name: string | undefined ) {
     savedManga.value = name
+  }
+
+  function setMangaDetail( mangaDetail : MangaDetail | undefined){
+    detail.value = mangaDetail
   }
 
   async function loadMangas() {
@@ -25,11 +28,45 @@ export const useMangaStore = defineStore('manga', () => {
     return mangaJson
   }
 
+  async function loadMangaDetail(id : string) {
+    const currentEpisode = parseInt(id.split('-').slice(-2)[0])
+    detail.value = await fetch(`/api/mangas/${id}`)
+      .then( r => r.json())
+      .then( detail => ({
+        ...detail,
+        episodes: [ ...detail.episodes.map( e => trackActiveEpisode(currentEpisode,e))]
+      }))
+
+    nextEpisode.value = next(id)
+
+    setManga(detail.value?.title)
+  }
+
+  function next(current_episode_id : string ) : Episode {
+    const split = current_episode_id.split('-')
+    const nextId = parseInt(split[split.length - 2]) + 1
+
+    return {
+      episode: nextId,
+      id: [ ...split.slice(0,split.length-2),nextId,split.slice(-1)].join('-')
+    }
+  }
+
+  function trackActiveEpisode(currentEpisodeNumber : number ,episode : Episode) : Episode {
+    episode.active = currentEpisodeNumber === episode.episode
+
+    return episode
+  }
+
   return {
     setManga,
+    setMangaDetail,
     loadMangas,
+    loadMangaDetail,
     savedManga,
-    mangas
+    mangas,
+    detail,
+    nextEpisode
   }
 })
 

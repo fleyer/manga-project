@@ -23,5 +23,6 @@ export type MangaDetail = {
 export type Episode = {
   id: string,
   link?: string,
-  episode: number
+  episode: number,
+  active?: boolean
 }
