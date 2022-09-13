@@ -1,13 +1,18 @@
 <script setup lang="ts">
-  import type { Manga } from './../types'
 
-  let mangas : Manga[] = reactive([])
+import { storeToRefs } from 'pinia';
+import { useMangaStore } from '~/store/manga'
 
-  onMounted(async() => {
-    const mangaJson : Manga[] = await fetch('api/mangas').then( r => r.json())
+const mangaStore = useMangaStore()
+const { mangas } = storeToRefs(mangaStore)
+const { loadMangas } = mangaStore
 
-    mangas.push(... mangaJson)
-  })
+onMounted(() => {
+  if(mangas.value.length === 0 ){
+    loadMangas()
+  }
+})
+
 </script>
 
 <template>
@@ -22,7 +27,6 @@
           <div class="manga-episode"><span class="badge">{{manga.episode}}</span></div>
           <div class="manga-subtitle"><span class="badge">{{manga.subtitle}}</span></div>
 
-          <!-- <div @click="navigate" @keypress.enter="navigate" role="link" class="manga-content"> -->
           <div class="manga-content">
             <span class="manga-title">{{manga.manga_title}}</span>
           </div>

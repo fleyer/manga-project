@@ -1,10 +1,9 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import { Manga } from '~/types'
 
 export const useMangaStore = defineStore('manga', () => {
-  /**
-   * Current name of the user.
-   */
   const savedManga = ref('')
+  const mangas : Manga[] = reactive([])
 
 
   /**
@@ -18,9 +17,19 @@ export const useMangaStore = defineStore('manga', () => {
     savedManga.value = name
   }
 
+  async function loadMangas() {
+    const mangaJson : Manga[] = await fetch('api/mangas').then( r => r.json())
+
+    mangas.push(...mangaJson)
+
+    return mangaJson
+  }
+
   return {
     setManga,
-    savedManga
+    loadMangas,
+    savedManga,
+    mangas
   }
 })
 
