@@ -177,6 +177,7 @@ declare global {
   const useLastChanged: typeof import('@vueuse/core')['useLastChanged']
   const useLocalStorage: typeof import('@vueuse/core')['useLocalStorage']
   const useMagicKeys: typeof import('@vueuse/core')['useMagicKeys']
+  const useMangaStore: typeof import('./store/manga')['useMangaStore']
   const useManualRefHistory: typeof import('@vueuse/core')['useManualRefHistory']
   const useMediaControls: typeof import('@vueuse/core')['useMediaControls']
   const useMediaQuery: typeof import('@vueuse/core')['useMediaQuery']
@@ -450,6 +451,7 @@ declare module '@vue/runtime-core' {
     readonly useLastChanged: UnwrapRef<typeof import('@vueuse/core')['useLastChanged']>
     readonly useLocalStorage: UnwrapRef<typeof import('@vueuse/core')['useLocalStorage']>
     readonly useMagicKeys: UnwrapRef<typeof import('@vueuse/core')['useMagicKeys']>
+    readonly useMangaStore: UnwrapRef<typeof import('./store/manga')['useMangaStore']>
     readonly useManualRefHistory: UnwrapRef<typeof import('@vueuse/core')['useManualRefHistory']>
     readonly useMediaControls: UnwrapRef<typeof import('@vueuse/core')['useMediaControls']>
     readonly useMediaQuery: UnwrapRef<typeof import('@vueuse/core')['useMediaQuery']>

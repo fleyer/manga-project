@@ -1,30 +1,38 @@
 <script setup lang="ts">
 // https://github.com/vueuse/head
 // you can use this to manipulate the document head in any components,
+
+  import { storeToRefs } from 'pinia';
+
 // they will be rendered correctly in the html results with vite-ssg
-useHead({
-  title: 'Manga',
-  meta: [
-    { name: 'description', content: 'rework mavanimes' },
-    {
-      name: 'theme-color',
-      content: computed(() => isDark.value ? '#00aba9' : '#ffffff'),
-    },
-  ],
-  link: [
-    {
-      rel: 'icon',
-      type: 'image/svg+xml',
-      href: computed(() => preferredDark.value ? '/favicon-dark.svg' : '/favicon.svg'),
-    },
-  ],
-})
+  const { savedManga } = storeToRefs(useMangaStore())
+
+  useHead({
+    title: 'Manga',
+    meta: [
+      { name: 'description', content: 'rework mavanimes' },
+      {
+        name: 'theme-color',
+        content: computed(() => isDark.value ? '#00aba9' : '#ffffff'),
+      },
+    ],
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/svg+xml',
+        href: computed(() => preferredDark.value ? '/favicon-dark.svg' : '/favicon.svg'),
+      },
+    ],
+  })
 </script>
 
 <template>
   <header>
     <nav>
-      <router-link to="/"><h1>Home</h1></router-link>
+      <ul>
+        <li><router-link to="/"><h1>Home</h1></router-link></li>
+        <li>{{savedManga}}</li>
+      </ul>
     </nav>
   </header>
   <RouterView />
@@ -33,5 +41,13 @@ useHead({
 <style>
   nav {
     padding-left: 16px;
+  }
+
+  nav ul {
+    display: inline-flex;
+  }
+
+  nav ul li {
+    margin-right: 16px;
   }
 </style>

@@ -2,7 +2,6 @@
   <section>
     <div class="manga-detail">
         <div class="manga-presentation">
-          <h1 class="manga-title">{{detail.title}}</h1>
           <img class="manga-detail-image" :src="detail.image_link"/>
           <div class="manga-description"></div>
         </div>
@@ -33,26 +32,29 @@
 <script setup lang="ts">
   import { watchEffect, ref, Ref } from 'vue'
   import { MangaDetail, Episode } from '~/types';
+  import { onBeforeRouteLeave } from 'vue-router';
 
   const props = defineProps<{ id: string }>()
   const detail : Ref<MangaDetail> = ref({})
   const nextEpisode : Ref<Episode> = ref({})
+  const mangaStore = useMangaStore()
 
   watchEffect(async () => {
     const currentEpisode = parseInt(props.id.split('-').slice(-2)[0])
 
-    console.log(currentEpisode)
+    detail.value = await fetch(`/api/mangas/${props.id}`)
+      .then( r => r.json())
+      .then( detail => ({
+        ...detail,
+        episodes: [ ...detail.episodes.map( e => trackActiveEpisode(currentEpisode,e))]
+      }))
 
-    detail.value = await fetch(`/api/mangas/${props.id}`).then( r => r.json())
+    nextEpisode.value = next(props.id)
+    mangaStore.setManga(detail.value.title)
+  })
 
-    if(detail.value.episodes){
-      detail.value = {
-        ...detail.value,
-        episodes: [ ...detail.value.episodes.map( e => trackActiveEpisode(currentEpisode,e))]
-      }
-
-      nextEpisode.value = next(props.id)
-    }
+  onBeforeRouteLeave(() => {
+    mangaStore.setManga(null)
   })
 
   function next(current_episode_id : string ) : Episode {
@@ -90,7 +92,6 @@
   }
 
   .manga-player {
-    margin-top: 20px;
   }
 
   .manga-presentation {
