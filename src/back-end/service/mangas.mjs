@@ -22,6 +22,14 @@ const service = {
             .then(document => buildDetail(mangaId,document))
 
         return detail
+    },
+
+    getVideoPlayer: async (playerId) => {
+        return await fetch(`https://mavavid.com/api/source/${playerId}`,{ method: 'POST' , data: { d: 'mavavid.com', r: ''}})
+            .then( r => r.json())
+            .then( json => ({
+                player_link: json.data.find( playerInfo => playerInfo.label === '720p')?.file
+            }))
     }
 
 }

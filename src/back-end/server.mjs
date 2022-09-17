@@ -11,6 +11,12 @@ export default async function (fastify, opts) {
             return mangaService.getDetail(mangaId)
 
       })
+
+      fastify.get('/api/player/:playerId', async (request, reply) => {
+            const { playerId } = request.params
+            return mangaService.getVideoPlayer(playerId)
+
+      })
 }
 
 

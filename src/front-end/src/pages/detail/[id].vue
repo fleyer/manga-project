@@ -5,7 +5,8 @@
           <img class="manga-detail-image" :src="detail.image_link"/>
           <div class="manga-description"></div>
         </div>
-        <iframe class="manga-player" v-if="detail.current_episode" allowfullscreen="true" width="800" height="500" :src="detail.current_episode.player_link"/>
+        <!-- <iframe class="manga-player" v-if="detail.current_episode" allowfullscreen="true" width="800" height="500" :src="detail.current_episode.player_link"/> -->
+        <video width="800" height="500" controls :src="player?.player_link" type="video/mp4" @play="onPlay"></video>
     </div>
   </section>
 
@@ -37,8 +38,8 @@
 
   const mangaStore =  useMangaStore()
   const props = defineProps<{ id: string }>()
-  const { loadMangaDetail,setMangaDetail,setManga } = mangaStore
-  const { detail, nextEpisode } = storeToRefs(mangaStore)
+  const { loadMangaDetail, loadMangaPlayer, setMangaDetail, setMangaPlayer, setManga } = mangaStore
+  const { detail, nextEpisode, player } = storeToRefs(mangaStore)
   const episodeCarroussel : Ref<HTMLDivElement | null>= ref(null)
   const activeEpisodeElement : Ref<HTMLDivElement[]> = ref([])
 
@@ -50,17 +51,24 @@
 
   watchEffect(async () => {
     loadMangaDetail(props.id)
+    .then( detail => detail && loadMangaPlayer(detail))
+
   })
 
   onBeforeRouteLeave(() => {
     setManga(undefined)
     setMangaDetail(undefined)
+    setMangaPlayer(undefined)
   })
 
   function setRef(elem : ComponentPublicInstance<HTMLDivElement>) {
     elem?.classList.contains('manga-episode-active') && activeEpisodeElement.value.push(elem)
 
     return elem
+  }
+
+  function onPlay(){
+    console.log('play')
   }
 
 </script>

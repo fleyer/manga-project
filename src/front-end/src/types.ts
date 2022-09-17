@@ -17,7 +17,7 @@ export type MangaDetail = {
   title: string,
   image_link: string,
   episodes: Episode[],
-  current_episode: Object
+  current_episode: PlayerInfo
 }
 
 export type Episode = {
@@ -25,4 +25,9 @@ export type Episode = {
   link?: string,
   episode: number,
   active?: boolean
+}
+
+
+export type PlayerInfo = {
+  player_link: string
 }
