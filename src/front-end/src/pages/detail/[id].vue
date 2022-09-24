@@ -1,15 +1,15 @@
 <template>
-  <section>
-    <div v-if="detail" class="manga-detail">
-        <div class="manga-presentation">
-          <img class="manga-detail-image" :src="detail.image_link"/>
-          <div class="manga-description"></div>
-        </div>
-        <video ref="videoPlayer" width="800" height="500" controls :src="player?.player_link" type="video/mp4" @play="onPlay" @loadedmetadata="onLoadMetaData"></video>
-    </div>
+  <section class="manga-player">
+    <video ref="videoPlayer" controls :src="player?.player_link" type="video/mp4" @play="onPlay" @loadedmetadata="onLoadMetaData"></video>
   </section>
 
   <section class="manga-episode-navigator">
+    <div v-if="detail" class="manga-detail">
+      <div class="manga-presentation">
+        <img class="manga-detail-image" :src="detail.image_link"/>
+        <div class="manga-description"></div>
+      </div>
+    </div>
     <ul ref="episodeCarroussel" class="manga-episode-list">
       <li :ref="setRef" v-if="detail" v-for="episode in detail.episodes" :class="episode.active ? 'manga-episode-active' : ''">
         <router-link :to="`/detail/${episode.id}`" custom v-slot="{ navigate }">
@@ -57,7 +57,6 @@
   watchEffect(async () => {
     loadMangaDetail(props.id)
     .then( detail => detail && loadMangaPlayer(detail))
-
   })
 
   onBeforeRouteLeave(() => {
@@ -113,6 +112,15 @@
 
 <style lang="css">
 
+  .manga-player {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .manga-player video {
+    object-fit: fill;
+  }
+
   .manga-detail {
     display: flex;
     flex-direction: row;
@@ -141,10 +149,13 @@
 
   .manga-episode-list {
     display: flex;
+    flex: 1;
+    overflow-x: scroll;
   }
 
   .manga-episode-navigator {
-    overflow-x: scroll;
+    display: flex;
+    flex-direction: row;
   }
 
   .manga-episode-list > li > div {
