@@ -5,8 +5,7 @@
           <img class="manga-detail-image" :src="detail.image_link"/>
           <div class="manga-description"></div>
         </div>
-        <!-- <iframe class="manga-player" v-if="detail.current_episode" allowfullscreen="true" width="800" height="500" :src="detail.current_episode.player_link"/> -->
-        <video width="800" height="500" controls :src="player?.player_link" type="video/mp4" @play="onPlay"></video>
+        <video ref="videoPlayer" width="800" height="500" controls :src="player?.player_link" type="video/mp4" @play="onPlay" @loadedmetadata="onLoadMetaData"></video>
     </div>
   </section>
 
@@ -35,13 +34,19 @@
   import type { Ref } from 'vue'
   import { onBeforeRouteLeave } from 'vue-router';
   import { storeToRefs } from 'pinia';
+  import { MangaDetail, MangaHistory } from '~/types';
 
   const mangaStore =  useMangaStore()
+  const historyStore =  useHistoryStore()
   const props = defineProps<{ id: string }>()
   const { loadMangaDetail, loadMangaPlayer, setMangaDetail, setMangaPlayer, setManga } = mangaStore
+  const { pushHistory } = historyStore
+
   const { detail, nextEpisode, player } = storeToRefs(mangaStore)
+  const { history } = storeToRefs(historyStore)
   const episodeCarroussel : Ref<HTMLDivElement | null>= ref(null)
   const activeEpisodeElement : Ref<HTMLDivElement[]> = ref([])
+  const videoPlayer : Ref<HTMLVideoElement | null> = ref(null)
 
   watchEffect(() =>{
     let target = activeEpisodeElement.value[0]
@@ -56,10 +61,39 @@
   })
 
   onBeforeRouteLeave(() => {
+    if(calculateProgress(videoPlayer.value) > 0) updateHistory(detail.value, videoPlayer.value)
+
     setManga(undefined)
     setMangaDetail(undefined)
     setMangaPlayer(undefined)
+
   })
+
+  function calculateProgress(videoPlayer : HTMLVideoElement | null) : number {
+    return videoPlayer ? Math.round((videoPlayer.currentTime / videoPlayer.duration) * 100) : 0
+  }
+
+  function continueWatching(detail : MangaDetail | undefined, history : Record<string,MangaHistory>, videoPlayer : HTMLVideoElement | null){
+    const mangaHistory = detail?.manga_title ? history[ detail?.manga_title ] : null
+
+    if(mangaHistory && videoPlayer){
+      videoPlayer.currentTime = videoPlayer.duration * mangaHistory.progress / 100
+    }
+  }
+
+  function updateHistory( detail : MangaDetail | undefined, videoPlayer : HTMLVideoElement | null) {
+    detail && pushHistory({
+      id: props.id,
+      title: detail.title,
+      manga_title: detail.manga_title,
+      image_link: detail.image_link,
+      progress: calculateProgress(videoPlayer),
+      episode: detail.current_episode.number,
+      detail_link: ``,
+      source: detail.source,
+      subtitle: detail.subtitle
+    })
+  }
 
   function setRef(elem : ComponentPublicInstance<HTMLDivElement>) {
     elem?.classList.contains('manga-episode-active') && activeEpisodeElement.value.push(elem)
@@ -68,7 +102,11 @@
   }
 
   function onPlay(){
-    console.log('play')
+    updateHistory(detail.value,videoPlayer.value)
+  }
+
+  function onLoadMetaData(){
+    continueWatching(detail.value,history.value,videoPlayer.value)
   }
 
 </script>

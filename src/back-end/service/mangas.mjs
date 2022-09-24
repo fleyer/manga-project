@@ -38,8 +38,8 @@ function buildDetail(mangaId,document){
     const split = mangaId.split('-')
     const mangaTitle = split.slice(0,split.length - 2).concat([ split[split.length - 1]]).join('-')
     const episodeOptionList = Array.from(document.querySelectorAll(`.category-${mangaTitle} div select option`).values())
-    const title = document.querySelector(`.category-${mangaTitle} header h1`).textContent
-    const playerLink = document.querySelector(`.category-${mangaTitle} div p iframe`).getAttribute('src')
+    const title = document.querySelector(`.category-${mangaTitle} header h1, .category-non-classe header h1`).textContent
+    const playerLink = document.querySelector(`.category-${mangaTitle} div p iframe, .category-non-classe div p iframe`).getAttribute('src')
 
     const episodes =  episodeOptionList.map(option => ({
         id: option.value.split('/').slice(-2)[0],
@@ -51,13 +51,16 @@ function buildDetail(mangaId,document){
 
     return {
         current_episode: {
+            number: parseInt(split.slice(-2)[0]), 
             player_link: playerLink
         },
         episodes,
         id: mangaId,
         title,
-        manga_title: title.split(' ').slice(0,-3).join(' '),
-        image_link: document.querySelector('meta[name="twitter:image"]').getAttribute("content")
+        manga_title: title.split(' ').slice(0,-2).join(' '),
+        image_link: document.querySelector('meta[name="twitter:image"]').getAttribute("content"),
+        source: 'MAVANIMES',
+        subtitle: split[split.length - 1]
     }
 }
 

@@ -16,25 +16,34 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="manga-home-header">
-    <h1>New episodes :</h1>
-  </header>
-  <div class="manga-list">
-    <div class="manga-item" v-for="manga in mangas">
-      <router-link :to="`detail/${manga.id}`" custom v-slot="{ navigate }">
-        <span @click="navigate" @keypress.enter="navigate" role="link">
-          <img :src="manga.image_link" loading="lazy"/>
-          <div class="manga-episode"><span class="badge">{{manga.episode}}</span></div>
-          <div class="manga-subtitle"><span class="badge">{{manga.subtitle}}</span></div>
+  <section>
+    <header class="manga-home-header">
+      <h1>Continue watching :</h1>
+    </header>
+    <History/>
+  </section>
+  <section>
+    <header class="manga-home-header">
+      <h1>New episodes :</h1>
+    </header>
+    <div class="manga-list">
+      <div class="manga-item" v-for="manga in mangas">
+        <router-link :to="`detail/${manga.id}`" custom v-slot="{ navigate }">
+          <span @click="navigate" @keypress.enter="navigate" role="link">
+            <img :src="manga.image_link" loading="lazy"/>
+            <div class="manga-episode"><span class="badge">{{manga.episode}}</span></div>
+            <div class="manga-subtitle"><span class="badge">{{manga.subtitle}}</span></div>
 
-          <div class="manga-content">
-            <span class="manga-title">{{manga.manga_title}}</span>
-          </div>
-        </span>
+            <div class="manga-content">
+              <span class="manga-title">{{manga.manga_title}}</span>
+            </div>
+          </span>
 
-      </router-link>
+        </router-link>
+      </div>
     </div>
-  </div>
+  </section>
+
 
 </template>
 

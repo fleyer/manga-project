@@ -2,7 +2,7 @@ import { type ViteSSGContext } from 'vite-ssg'
 
 export type UserModule = (ctx: ViteSSGContext) => void
 
-export type Manga = {
+export interface Manga {
   id: string,
   title: string,
   manga_title: string,
@@ -10,14 +10,17 @@ export type Manga = {
   image_link: string,
   subtitle: string,
   episode: number,
-  detail_link: string
+  detail_link: string,
 }
 
 export type MangaDetail = {
   title: string,
+  manga_title: string,
   image_link: string,
   episodes: Episode[],
-  current_episode: PlayerInfo
+  current_episode: PlayerInfo,
+  source: string,
+  subtitle: string
 }
 
 export type Episode = {
@@ -27,7 +30,11 @@ export type Episode = {
   active?: boolean
 }
 
-
 export type PlayerInfo = {
+  number: number,
   player_link: string
+}
+
+export interface MangaHistory extends Manga {
+  progress: number
 }
