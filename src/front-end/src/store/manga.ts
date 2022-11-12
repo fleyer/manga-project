@@ -14,15 +14,15 @@ export const useMangaStore = defineStore('manga', () => {
    *
    * @param name - new name to set
    */
-  function setManga(name?: string ) {
+  function setManga(name: string ) {
     savedManga.value = name
   }
 
-  function setMangaDetail( mangaDetail? : MangaDetail){
+  function setMangaDetail( mangaDetail : MangaDetail){
     detail.value = mangaDetail
   }
 
-  function setMangaPlayer( playerInfo? : PlayerInfo){
+  function setMangaPlayer( playerInfo : PlayerInfo){
     player.value = playerInfo
     activeLink.value = undefined
   }
@@ -45,8 +45,6 @@ export const useMangaStore = defineStore('manga', () => {
       }))
 
     nextEpisode.value = next(id)
-
-    setManga(detail.value?.title)
 
     return detail.value
   }

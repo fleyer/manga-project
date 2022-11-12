@@ -1,7 +1,11 @@
 <template>
   <div class="manga-detail-container">
+    <div class="absolute px-4 py-2">
+      <h1>{{detail?.title}}</h1>
+    </div>
+
     <section class="manga-player">
-      {{player}}
+
       <video :class="{visible: visible}" ref="videoPlayer" controls :src="activeLink" type="video/mp4" @play="onPlay"  @loadstart="onError" @loadedmetadata="onLoadMetaData"></video>
     </section>
 
@@ -47,7 +51,7 @@
   const { loadMangaDetail, loadMangaPlayer, setMangaDetail, setMangaPlayer, setManga } = mangaStore
   const { pushHistory } = historyStore
 
-  const { detail, player, activeLink } = storeToRefs(mangaStore)
+  const { detail, activeLink } = storeToRefs(mangaStore)
   const { history } = storeToRefs(historyStore)
   // const episodeCarroussel = ref<HTMLDivElement>()
   const activeEpisodeElement = ref<HTMLDivElement[]>([])

@@ -1,11 +1,4 @@
 <script setup lang="ts">
-// https://github.com/vueuse/head
-// you can use this to manipulate the document head in any components,
-
-  import { storeToRefs } from 'pinia';
-
-// they will be rendered correctly in the html results with vite-ssg
-  const { savedManga } = storeToRefs(useMangaStore())
 
   useHead({
     title: 'Manga',
@@ -27,14 +20,6 @@
 </script>
 
 <template>
-  <header>
-    <nav>
-      <ul>
-        <li><router-link to="/"><h1>Home</h1></router-link></li>
-        <li>{{savedManga}}</li>
-      </ul>
-    </nav>
-  </header>
   <RouterView />
 </template>
 
