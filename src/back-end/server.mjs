@@ -1,6 +1,7 @@
 import mangaService from './service/mangas.mjs'
 
 export default async function (fastify, opts) {
+
   fastify.get('/api/mangas', async (request, reply) => {
     return mangaService.getAll()
 
@@ -12,9 +13,8 @@ export default async function (fastify, opts) {
 
   })
 
-  fastify.get('/api/player/:playerId', async (request, reply) => {
-    return mangaService.getVideoPlayer(request.query)
-
+  fastify.get('/api/player', async (request, reply) => {
+    return reply.redirect(301,await mangaService.getVideoPlayer(request.query))
   })
 }
 

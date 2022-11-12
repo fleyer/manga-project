@@ -1,5 +1,4 @@
 import { JSDOM } from 'jsdom'
-import fetch from 'node-fetch'
 
 const service = {
 
@@ -26,20 +25,40 @@ const service = {
   },
 
   getVideoPlayer: async ({playerId,source}) => {
+    let link = Buffer.from(playerId, 'base64').toString('ascii');
 
     switch(source){
-      case "mavavid":
-        return await fetch(`https://mavavid.com/api/source/${playerId}`, { method: 'POST', data: { d: 'mavavid.com', r: '' } })
-        .then(r => r.json())
-        .then(json => ({
-          player_link: json.data.find(playerInfo => playerInfo.label === '720p')?.file
-        }))   
-      break;
+      case "MAVANIMES":
+        const id = link.split('/v/').pop()
 
-      case "streamtape":
+        return await fetch(`https://mavavid.com/api/source/${id}`, { 
+            method: 'POST',
+            data: { d: 'mavavid.com', r: '' } 
+          })
+          .then(r => r.json())
+          .then(json => json.data.find(playerInfo => playerInfo.label === '720p')?.file)   
 
-      break;
-
+      case "STREAMTAPE":
+        return await fetch(link)
+          .then(r => r.text())
+          .then(html => new JSDOM(html))
+          .then(dom => dom.window.document.body)
+          .then(body => Array.from(body.querySelectorAll('script').values()))
+          .then( scripts => scripts.reverse()
+            .find( scripts => (scripts.innerHTML.split('\n'))
+              .find( line => line.includes(`.getElementById('robotlink')`))
+            )
+          )
+          .then( script => script?.innerHTML.split('\n')[2])
+          .then(line => {
+            let [ , ,part1, part2 ] = line.split(/[ +]/).filter(part => part.length > 0)
+            return [
+                'https:',
+                part1.replace(/\'/g,''),
+                part2.match(/\(([^()]+)\)/g)[0].replace(/[())']+/g,'').substring(3),
+                '&stream=1'
+              ].join('')
+          })
     }
   }
 
@@ -47,7 +66,7 @@ const service = {
 
 function buildDetail(mangaId, document) {
   const split = mangaId.split('-')
-  const mangaTitle = split.slice(0, split.length - 2).concat([split[split.length - 1]]).join('-')
+  const mangaTitle = split.slice(0, split.length - 2).concat([split[split.length - 1]]).join('-').replace(/[()]+/g,'')
   const episodeOptionList = Array.from(document.querySelectorAll(`.category-${mangaTitle} div select option`).values())
   const title = document.querySelector(`.category-${mangaTitle} header h1, .category-non-classe header h1`).textContent
   const playerLink = buildPlayerLink(document,mangaTitle)
@@ -77,7 +96,7 @@ function buildDetail(mangaId, document) {
 
 function buildPlayerLink(document, mangaTitle){
   const playerIframes = Array.from(document.querySelectorAll(`.category-${mangaTitle} div p iframe, .category-non-classe div p iframe`).values())
-  
+
   return playerIframes.map( iframe => iframe.getAttribute('src'))
 }
 
@@ -94,7 +113,7 @@ function buildMangaDocument(item) {
     subtitle: split[split.length - 1],
     episode: split[split.length - 2],
     source: 'MAVANIMES',
-    image_link: item.querySelector('a img').src,
+    image_link: item.querySelector('img')?.src,
     detail_link: `/api/mangas/${id}`
   }
 }

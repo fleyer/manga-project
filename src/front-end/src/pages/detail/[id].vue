@@ -1,32 +1,37 @@
 <template>
-  <section class="manga-player">
-    <video ref="videoPlayer" controls :src="player?.player_link" type="video/mp4" @play="onPlay" @loadedmetadata="onLoadMetaData"></video>
-  </section>
+  <div class="manga-detail-container">
+    <section class="manga-player">
+      {{player}}
+      <video :class="{visible: visible}" ref="videoPlayer" controls :src="activeLink" type="video/mp4" @play="onPlay"  @loadstart="onError" @loadedmetadata="onLoadMetaData"></video>
+    </section>
 
-  <section class="manga-episode-navigator">
-    <div v-if="detail" class="manga-detail">
-      <div class="manga-presentation">
-        <img class="manga-detail-image" :src="detail.image_link"/>
-        <div class="manga-description"></div>
+    <!-- <section class="manga-episode-navigator">
+      <div v-if="detail" class="manga-detail">
+        <div class="manga-presentation">
+          <img class="manga-detail-image" :src="detail.image_link"/>
+          <div class="manga-description"></div>
+        </div>
       </div>
-    </div>
-    <ul ref="episodeCarroussel" class="manga-episode-list">
-      <li :ref="setRef" v-if="detail" v-for="episode in detail.episodes" :class="episode.active ? 'manga-episode-active' : ''">
-        <router-link :to="`/detail/${episode.id}`" custom v-slot="{ navigate }">
-          <div @click="navigate">
-            <span>{{episode.episode}}</span>
-          </div>
-        </router-link>
-      </li>
+      <ul ref="episodeCarroussel" class="manga-episode-list">
+        <li :ref="setRef" v-if="detail" v-for="episode in detail.episodes" :class="episode.active ? 'manga-episode-active' : ''">
+          <router-link :to="`/detail/${episode.id}`" custom v-slot="{ navigate }">
+            <div @click="navigate">
+              <span>{{episode.episode}}</span>
+            </div>
+          </router-link>
+        </li>
 
-      <li v-if="detail && nextEpisode">
-        <router-link :to="`/detail/${nextEpisode.id}`">
-          {{nextEpisode.episode}} next >>
-        </router-link>
+        <li v-if="detail && nextEpisode">
+          <router-link :to="`/detail/${nextEpisode.id}`">
+            {{nextEpisode.episode}} next >>
+          </router-link>
 
-      </li>
-    </ul>
-  </section>
+        </li>
+      </ul>
+    </section> -->
+  </div>
+
+
 </template>
 
 <script setup lang="ts">
@@ -42,11 +47,13 @@
   const { loadMangaDetail, loadMangaPlayer, setMangaDetail, setMangaPlayer, setManga } = mangaStore
   const { pushHistory } = historyStore
 
-  const { detail, nextEpisode, player } = storeToRefs(mangaStore)
+  const { detail, player, activeLink } = storeToRefs(mangaStore)
   const { history } = storeToRefs(historyStore)
-  const episodeCarroussel : Ref<HTMLDivElement | null>= ref(null)
-  const activeEpisodeElement : Ref<HTMLDivElement[]> = ref([])
+  // const episodeCarroussel = ref<HTMLDivElement>()
+  const activeEpisodeElement = ref<HTMLDivElement[]>([])
   const videoPlayer : Ref<HTMLVideoElement | null> = ref(null)
+  const visible = ref<boolean>(false)
+  let tryNumber : number = 0
 
   watchEffect(() =>{
     let target = activeEpisodeElement.value[0]
@@ -55,8 +62,9 @@
   })
 
   watchEffect(async () => {
-    loadMangaDetail(props.id)
-    .then( detail => detail && loadMangaPlayer(detail))
+    await loadMangaDetail(props.id)
+      .then( () => loadMangaPlayer(tryNumber))
+      .catch( e => console.log('can\'t load player'))
   })
 
   onBeforeRouteLeave(() => {
@@ -66,13 +74,18 @@
     setMangaDetail(undefined)
     setMangaPlayer(undefined)
 
+    visible.value = false
   })
 
   function calculateProgress(videoPlayer : HTMLVideoElement | null) : number {
     return videoPlayer ? Math.round((videoPlayer.currentTime / videoPlayer.duration) * 100) : 0
   }
 
-  function continueWatching(detail : MangaDetail | undefined, history : Record<string,MangaHistory>, videoPlayer : HTMLVideoElement | null){
+  function continueWatching(
+    detail : MangaDetail,
+    history : Record<string,MangaHistory>,
+    videoPlayer? : HTMLVideoElement
+  ){
     const mangaHistory = detail?.manga_title ? history[ detail?.manga_title ] : null
 
     if(mangaHistory && videoPlayer){
@@ -100,11 +113,21 @@
     return elem
   }
 
+  function onError(e : any){
+
+    if(tryNumber < 1){
+      tryNumber++
+      detail && loadMangaPlayer(tryNumber)
+    }
+  }
+
   function onPlay(){
     updateHistory(detail.value,videoPlayer.value)
   }
 
-  function onLoadMetaData(){
+  function onLoadMetaData(e : any){
+    visible.value = true
+
     continueWatching(detail.value,history.value,videoPlayer.value)
   }
 
@@ -112,13 +135,27 @@
 
 <style lang="css">
 
+  .manga-detail-container {
+    height: 100%;
+  }
+
   .manga-player {
     width: 100%;
+    height: 100%;
     margin-bottom: 10px;
   }
 
   .manga-player video {
-    object-fit: fill;
+    object-fit: cover;
+    opacity: 0;
+    -webkit-transition: opacity 0.3s ease-in-out;
+    -moz-transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out;
+    height: 100%;
+  }
+
+  .manga-player video.visible {
+    opacity: 1;
   }
 
   .manga-detail {
@@ -133,9 +170,6 @@
 
   .manga-detail-image {
     max-width: 300px;
-  }
-
-  .manga-player {
   }
 
   .manga-presentation {

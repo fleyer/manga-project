@@ -1,28 +1,30 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { Episode, MangaDetail, Manga, PlayerInfo } from '~/types'
-import type { Ref } from 'vue'
 
 export const useMangaStore = defineStore('manga', () => {
-  const savedManga : Ref<string | undefined> = ref(undefined)
-  const mangas : Manga[] = reactive([])
-  const nextEpisode : Ref<Episode|undefined> = ref(undefined)
-  const detail : Ref<MangaDetail|undefined> = ref(undefined)
-  const player : Ref<PlayerInfo|undefined> = ref(undefined)
+  const savedManga = ref<string>()
+  const mangas : Manga[] = reactive<Manga[]>([])
+  const nextEpisode = ref<Episode>()
+  const detail = ref<MangaDetail>()
+  const player = ref<Partial<PlayerInfo>>()
+  const activeLink = ref<string>()
+
   /**
    * Changes the current manga
    *
    * @param name - new name to set
    */
-  function setManga(name: string | undefined ) {
+  function setManga(name?: string ) {
     savedManga.value = name
   }
 
-  function setMangaDetail( mangaDetail : MangaDetail | undefined){
+  function setMangaDetail( mangaDetail? : MangaDetail){
     detail.value = mangaDetail
   }
 
-  function setMangaPlayer( playerInfo : PlayerInfo | undefined){
+  function setMangaPlayer( playerInfo? : PlayerInfo){
     player.value = playerInfo
+    activeLink.value = undefined
   }
 
   async function loadMangas() {
@@ -39,7 +41,7 @@ export const useMangaStore = defineStore('manga', () => {
       .then( r => r.json())
       .then( detail => ({
         ...detail,
-        episodes: [ ...detail.episodes.map( e => trackActiveEpisode(currentEpisode,e))]
+        episodes: [ ...detail.episodes.map( (e : Episode) => trackActiveEpisode(currentEpisode,e))]
       }))
 
     nextEpisode.value = next(id)
@@ -49,12 +51,14 @@ export const useMangaStore = defineStore('manga', () => {
     return detail.value
   }
 
-  async function loadMangaPlayer(detail : MangaDetail) : Promise<PlayerInfo | undefined>{
-    const id = detail.current_episode.player_link.split('/v/').pop()
-    player.value = await fetch(`/api/player/${id}`)
-      .then( r => r.json())
+  function loadMangaPlayer(index?: number){
+    const i = index || 0
+    const currentDetail = detail.value
+    const source = extractSource(currentDetail?.current_episode.player_link[i])
 
-    return player.value
+    if(currentDetail){
+      activeLink.value = `/api/player?playerId=${btoa(currentDetail.current_episode.player_link[i])}&source=${source}`
+    }
   }
 
   function next(current_episode_id : string ) : Episode {
@@ -84,9 +88,14 @@ export const useMangaStore = defineStore('manga', () => {
     mangas,
     detail,
     nextEpisode,
-    player
+    player,
+    activeLink
   }
 })
+
+function extractSource(playerLink? : string){
+  return playerLink && playerLink.includes('mavavid') ? 'MAVANIMES' : 'STREAMTAPE'
+}
 
 if (import.meta.hot)
   import.meta.hot.accept(acceptHMRUpdate(useUserStore, import.meta.hot))

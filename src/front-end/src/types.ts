@@ -30,9 +30,10 @@ export type Episode = {
   active?: boolean
 }
 
-export type PlayerInfo = {
+export interface PlayerInfo {
   number: number,
-  player_link: string
+  player_link: string[],
+  active_link: string
 }
 
 export interface MangaHistory extends Manga {
