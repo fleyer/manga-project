@@ -1,12 +1,8 @@
 <template>
   <div class="manga-detail-container">
-    <div class="absolute px-4 py-2">
-      <h1>{{detail?.title}}</h1>
-    </div>
-
     <section class="manga-player">
 
-      <video :class="{visible: visible}" ref="videoPlayer" controls :src="activeLink" type="video/mp4" @play="onPlay"  @loadstart="onError" @loadedmetadata="onLoadMetaData"></video>
+      <player-view :auto-play="autoPlay"></player-view>
     </section>
 
     <!-- <section class="manga-episode-navigator">
@@ -39,30 +35,25 @@
 </template>
 
 <script setup lang="ts">
-  import { ComponentPublicInstance, watchEffect } from 'vue'
-  import type { Ref } from 'vue'
+  import { watchEffect } from 'vue'
   import { onBeforeRouteLeave } from 'vue-router';
-  import { storeToRefs } from 'pinia';
-  import { MangaDetail, MangaHistory } from '~/types';
+  import PlayerView from './playerView.vue';
+  import { useRoute } from 'vue-router';
 
   const mangaStore =  useMangaStore()
-  const historyStore =  useHistoryStore()
   const props = defineProps<{ id: string }>()
   const { loadMangaDetail, loadMangaPlayer, setMangaDetail, setMangaPlayer, setManga } = mangaStore
-  const { pushHistory } = historyStore
-
-  const { detail, activeLink } = storeToRefs(mangaStore)
-  const { history } = storeToRefs(historyStore)
-  // const episodeCarroussel = ref<HTMLDivElement>()
+  const route = useRoute()
+  const autoPlay = ref<boolean>(false)
   const activeEpisodeElement = ref<HTMLDivElement[]>([])
-  const videoPlayer : Ref<HTMLVideoElement | null> = ref(null)
-  const visible = ref<boolean>(false)
   let tryNumber : number = 0
 
   watchEffect(() =>{
     let target = activeEpisodeElement.value[0]
 
     target?.scrollIntoView()
+
+    autoPlay.value = route.params.autoPlay === "true"
   })
 
   watchEffect(async () => {
@@ -72,68 +63,13 @@
   })
 
   onBeforeRouteLeave(() => {
-    if(calculateProgress(videoPlayer.value) > 0) updateHistory(detail.value, videoPlayer.value)
+    // if(calculateProgress(videoPlayer) > 0) updateHistory(detail.value, videoPlayer)
 
     setManga(undefined)
     setMangaDetail(undefined)
     setMangaPlayer(undefined)
 
-    visible.value = false
   })
-
-  function calculateProgress(videoPlayer : HTMLVideoElement | null) : number {
-    return videoPlayer ? Math.round((videoPlayer.currentTime / videoPlayer.duration) * 100) : 0
-  }
-
-  function continueWatching(
-    detail : MangaDetail,
-    history : Record<string,MangaHistory>,
-    videoPlayer? : HTMLVideoElement
-  ){
-    const mangaHistory = detail?.manga_title ? history[ detail?.manga_title ] : null
-
-    if(mangaHistory && videoPlayer){
-      videoPlayer.currentTime = videoPlayer.duration * mangaHistory.progress / 100
-    }
-  }
-
-  function updateHistory( detail : MangaDetail | undefined, videoPlayer : HTMLVideoElement | null) {
-    detail && pushHistory({
-      id: props.id,
-      title: detail.title,
-      manga_title: detail.manga_title,
-      image_link: detail.image_link,
-      progress: calculateProgress(videoPlayer),
-      episode: detail.current_episode.number,
-      detail_link: ``,
-      source: detail.source,
-      subtitle: detail.subtitle
-    })
-  }
-
-  function setRef(elem : ComponentPublicInstance<HTMLDivElement>) {
-    elem?.classList.contains('manga-episode-active') && activeEpisodeElement.value.push(elem)
-
-    return elem
-  }
-
-  function onError(e : any){
-
-    if(tryNumber < 1){
-      tryNumber++
-      detail && loadMangaPlayer(tryNumber)
-    }
-  }
-
-  function onPlay(){
-    updateHistory(detail.value,videoPlayer.value)
-  }
-
-  function onLoadMetaData(e : any){
-    visible.value = true
-
-    continueWatching(detail.value,history.value,videoPlayer.value)
-  }
 
 </script>
 
@@ -146,20 +82,6 @@
   .manga-player {
     width: 100%;
     height: 100%;
-    margin-bottom: 10px;
-  }
-
-  .manga-player video {
-    object-fit: cover;
-    opacity: 0;
-    -webkit-transition: opacity 0.3s ease-in-out;
-    -moz-transition: opacity 0.3s ease-in-out;
-    transition: opacity 0.3s ease-in-out;
-    height: 100%;
-  }
-
-  .manga-player video.visible {
-    opacity: 1;
   }
 
   .manga-detail {

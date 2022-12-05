@@ -29,15 +29,20 @@ onMounted(() => {
     <div class="manga-list">
       <div class="manga-item" v-for="manga in mangas">
         <router-link :to="`detail/${manga.id}`" custom v-slot="{ navigate }">
-          <span @click="navigate" @keypress.enter="navigate" role="link">
+          <div @click="navigate" @keypress.enter="navigate" role="link">
             <img :src="manga.image_link" loading="lazy"/>
             <div class="manga-episode"><span class="badge">{{manga.episode}}</span></div>
             <div class="manga-subtitle"><span class="badge">{{manga.subtitle}}</span></div>
+            <router-link :to="`detail/${manga.id}?autoPlay=true`" custom v-slot="{ navigate: autoPlayNavigate }">
+              <div class="manga-play-button" @click="autoPlayNavigate">
+                <span i-carbon-play-filled ></span>
+              </div>
+            </router-link>
 
             <div class="manga-content">
               <span class="manga-title">{{manga.manga_title}}</span>
             </div>
-          </span>
+          </div>
 
         </router-link>
       </div>
@@ -50,6 +55,37 @@ onMounted(() => {
 <style>
   .manga-home-header {
     text-align: start;
+  }
+
+  div.manga-play-button {
+    display: flex;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    color: #d9d9d9;
+    text-shadow: -1px -1px 1px rgba(255,255,255,.1), 1px 1px 1px rgba(0,0,0,.5);
+  }
+
+  div.manga-play-button span {
+    visibility: hidden;
+  }
+
+  div.manga-play-button:hover span {
+    visibility: visible;
+  }
+
+  div.manga-play-button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  div.manga-play-button span {
+    font-size: 3em;
+  }
+
+  div.manga-play-button span:hover {
+    scale: 1.1;
   }
 
   .manga-list {
@@ -66,7 +102,7 @@ onMounted(() => {
     overflow: hidden;
   }
 
-  .manga-item > span {
+  .manga-item > div {
     position: relative;
     display: flex;
     width: 300px;
@@ -84,6 +120,7 @@ onMounted(() => {
     left: 0;
     display: flex;
     flex-direction: column;
+    z-index: 10;
   }
 
   .manga-content .manga-title {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
   const props = defineProps<{ progress: number }>()
   const computedPercentage = computed( () => {
-    console.log(props.progress)
     return props.progress > 5 ? props.progress : 5
   })
 </script>

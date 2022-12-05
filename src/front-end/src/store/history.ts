@@ -6,7 +6,7 @@ export const useHistoryStore = defineStore('history', () => {
   const history : Ref<Record<string,MangaHistory>>= ref(useStorage('history',{}))
 
   function pushHistory(newHistory : MangaHistory) {
-    console.log(newHistory)
+
     history.value[newHistory.manga_title] = newHistory
   }
 

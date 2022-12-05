@@ -14,15 +14,15 @@ export const useMangaStore = defineStore('manga', () => {
    *
    * @param name - new name to set
    */
-  function setManga(name: string ) {
+  function setManga(name: string | undefined) {
     savedManga.value = name
   }
 
-  function setMangaDetail( mangaDetail : MangaDetail){
+  function setMangaDetail( mangaDetail : MangaDetail | undefined){
     detail.value = mangaDetail
   }
 
-  function setMangaPlayer( playerInfo : PlayerInfo){
+  function setMangaPlayer( playerInfo : PlayerInfo | undefined){
     player.value = playerInfo
     activeLink.value = undefined
   }
