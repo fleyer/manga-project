@@ -19,7 +19,7 @@
   import { MangaDetail, MangaHistory } from '~/types';
   import { defineProps } from 'vue';
 
-  const props = defineProps<{ autoPlay: boolean }>()
+  const props = defineProps<{ autoPlay?: boolean }>()
 
   const mangaStore =  useMangaStore()
   const historyStore =  useHistoryStore()
@@ -36,8 +36,8 @@
 
   watchEffect((onInvalidate) => {
     const interval = setInterval(() => updateProgress(detail.value!,videoPlayer.value!),1000)
-    videoPlayer.value?.setAttribute("autoplay",`${props.autoPlay}`)
-
+    props.autoPlay && videoPlayer.value?.setAttribute("autoplay",'')
+        
     onInvalidate(() => {
       clearInterval(interval)
     })

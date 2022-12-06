@@ -2,7 +2,7 @@
   <div class="manga-detail-container">
     <section class="manga-player">
 
-      <player-view :auto-play="autoPlay"></player-view>
+      <player-view :auto-play="parsedAutoPlay"></player-view>
     </section>
 
     <!-- <section class="manga-episode-navigator">
@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-  import { watchEffect } from 'vue'
+  import { watchEffect, computed } from 'vue'
   import { onBeforeRouteLeave } from 'vue-router';
   import PlayerView from './playerView.vue';
   import { useRoute } from 'vue-router';
@@ -48,12 +48,14 @@
   const activeEpisodeElement = ref<HTMLDivElement[]>([])
   let tryNumber : number = 0
 
+  const parsedAutoPlay = computed(() => {
+    return autoPlay.value = route.query.autoPlay === "true"
+  })
+
   watchEffect(() =>{
     let target = activeEpisodeElement.value[0]
 
     target?.scrollIntoView()
-
-    autoPlay.value = route.params.autoPlay === "true"
   })
 
   watchEffect(async () => {

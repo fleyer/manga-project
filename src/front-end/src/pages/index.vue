@@ -33,11 +33,13 @@ onMounted(() => {
             <img :src="manga.image_link" loading="lazy"/>
             <div class="manga-episode"><span class="badge">{{manga.episode}}</span></div>
             <div class="manga-subtitle"><span class="badge">{{manga.subtitle}}</span></div>
+
             <router-link :to="`detail/${manga.id}?autoPlay=true`" custom v-slot="{ navigate: autoPlayNavigate }">
-              <div class="manga-play-button" @click="autoPlayNavigate">
-                <span i-carbon-play-filled ></span>
+              <div class="manga-play-button" role="link">
+                <span i-carbon-play-filled @click="autoPlayNavigate" ></span>
               </div>
             </router-link>
+
 
             <div class="manga-content">
               <span class="manga-title">{{manga.manga_title}}</span>
