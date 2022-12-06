@@ -70,6 +70,10 @@ onMounted(() => {
     text-shadow: -1px -1px 1px rgba(255,255,255,.1), 1px 1px 1px rgba(0,0,0,.5);
   }
 
+  div.manga-play-button {
+    z-index: 1;
+  }
+
   div.manga-play-button span {
     visibility: hidden;
   }
@@ -110,6 +114,7 @@ onMounted(() => {
     width: 300px;
     height: 200px;
     cursor: pointer;
+    z-index: 10;
   }
 
   .manga-item:hover .manga-subtitle {
