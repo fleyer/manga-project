@@ -2,7 +2,7 @@
   import { storeToRefs } from 'pinia';
   import { ComputedRef } from 'vue';
   import { MangaHistory } from '~/types';
-  import Progress from './Progress.vue'
+  import Progress from '../Progress.vue'
 
   const historyStore = useHistoryStore()
   const { history } = storeToRefs(historyStore)
@@ -14,23 +14,18 @@
 </script>
 
 <template>
-  <ul class="manga-history">
-    <li class="manga-history-item" v-for="historyItem in historyList">
-      <router-link :to="`/detail/${historyItem.id}`">
+  <Section :items="historyList" :custom-css-classes="['overflow-x-auto']">
+    <template #title>Continue watching</template>
+    <template #item="{item}"><router-link :to="`/detail/${item.id}`">
         <div class="manga-history-title">
-          <h1>{{historyItem.title}}</h1>
+          <h1>{{item.title}}</h1>
         </div>
-        <div class="manga-history-progress"><Progress :progress="historyItem.progress"></Progress></div>
-      </router-link>
-    </li>
-  </ul>
+        <div class="manga-history-progress"><Progress :progress="item.progress"></Progress></div>
+      </router-link></template>
+  </Section>
 </template>
 
 <style>
-
-  .manga-history-title {
-    display: flex;
-  }
 
   .manga-history-progress {
     position: absolute;
@@ -39,15 +34,11 @@
     width: 100%;
   }
 
-  .manga-history {
-    display: flex;
-    overflow-x: auto;
-  }
-
   .manga-history-item {
     border: 1px solid #212121;
     border-radius: 4px;
     width: 300px;
+    min-width: 300px;
     margin: 4px;
     position: relative;
   }
