@@ -10,10 +10,13 @@ declare module '@vue/runtime-core' {
     Counter: typeof import('./components/Counter.vue')['default']
     Footer: typeof import('./components/Footer.vue')['default']
     History: typeof import('./components/History.vue')['default']
+    NewEpisode: typeof import('./components/view/NewEpisode.vue')['default']
     Progress: typeof import('./components/Progress.vue')['default']
     README: typeof import('./components/README.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Section: typeof import('./components/Section.vue')['default']
+    SectionItem: typeof import('./components/view/SectionItem.vue')['default']
     VideoPlaye: typeof import('./components/VideoPlaye.vue')['default']
   }
 }

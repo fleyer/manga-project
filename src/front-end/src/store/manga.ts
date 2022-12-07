@@ -1,5 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { Episode, MangaDetail, Manga, PlayerInfo } from '~/types'
+import { useHistoryStore } from './history'
 
 export const useMangaStore = defineStore('manga', () => {
   const savedManga = ref<string>()

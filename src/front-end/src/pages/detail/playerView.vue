@@ -37,7 +37,7 @@
   watchEffect((onInvalidate) => {
     const interval = setInterval(() => updateProgress(detail.value!,videoPlayer.value!),1000)
     props.autoPlay && videoPlayer.value?.setAttribute("autoplay",'')
-        
+
     onInvalidate(() => {
       clearInterval(interval)
     })
@@ -86,7 +86,11 @@
   ) {
     const mangaHistory = detail!.value!.manga_title ? history[detail!.value!.manga_title] : null
 
-    if (mangaHistory && videoPlayer) {
+    if (
+      mangaHistory &&
+      mangaHistory.episode === detail.value?.current_episode.number &&
+      videoPlayer
+    ) {
       videoPlayer.currentTime = videoPlayer.duration * mangaHistory.progress / 100
     }
   }

@@ -17,9 +17,21 @@ onMounted(() => {
 
 <template>
   <section>
+    <NewEpisode>
+      <template v-slot:title>
+        <header class="manga-home-header">
+        <h1>New episodes :</h1>
+      </header>
+    </template>
+    </NewEpisode>
+  </section>
+
+  <section>
+
     <header class="manga-home-header">
       <h1>Continue watching :</h1>
     </header>
+
     <History/>
   </section>
   <section>

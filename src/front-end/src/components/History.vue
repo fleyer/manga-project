@@ -17,15 +17,21 @@
   <ul class="manga-history">
     <li class="manga-history-item" v-for="historyItem in historyList">
       <router-link :to="`/detail/${historyItem.id}`">
-        <h1>{{historyItem.title}}</h1>
+        <div class="manga-history-title">
+          <h1>{{historyItem.title}}</h1>
+        </div>
         <div class="manga-history-progress"><Progress :progress="historyItem.progress"></Progress></div>
       </router-link>
-
     </li>
   </ul>
 </template>
 
 <style>
+
+  .manga-history-title {
+    display: flex;
+  }
+
   .manga-history-progress {
     position: absolute;
     bottom: 0;
