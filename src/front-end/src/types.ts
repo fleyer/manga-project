@@ -39,6 +39,8 @@ export interface PlayerInfo {
   active_link: string
 }
 
-export interface MangaHistory extends Manga {
+export interface _MangaHistory extends Manga {
   progress: number
 }
+
+export type MangaHistory = Omit<_MangaHistory,"detail_link">

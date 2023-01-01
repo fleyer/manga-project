@@ -2,7 +2,7 @@
   <Section :items="newEpisodelist" :custom-css-classes="['overflow-x-auto']">
     <template #title >New episodes</template>
     <template #item="{item}">
-      <router-link :to="`/detail/${item.id}`">
+      <router-link :to="getDetailLink(item)">
         <div class="manga-history-title">
           <h1>{{item.title}}</h1>
         </div>
@@ -15,6 +15,7 @@
   import { storeToRefs } from 'pinia';
   import { useNewEpisodeStore } from '~/store/newEpisode'
   import { computed } from 'vue'
+  import { getDetailLink } from '~/model/manga';
 
   const historyStore = useNewEpisodeStore()
   const { newEpisodes } = storeToRefs(historyStore)

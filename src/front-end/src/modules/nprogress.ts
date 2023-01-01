@@ -10,3 +10,16 @@ export const install: UserModule = ({ isClient, router }) => {
     router.afterEach(() => { NProgress.done() })
   }
 }
+
+const start = () => {
+  NProgress.start()
+}
+
+const end = () => {
+  NProgress.done()
+}
+
+export default {
+  start,
+  end
+}

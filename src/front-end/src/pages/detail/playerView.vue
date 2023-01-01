@@ -1,5 +1,5 @@
 <template>
-  <div v-show="!isPlaying" class="manga-detail-title absolute px-4 py-2">
+  <div v-show="!isPlaying" class="manga-detail-title absolute px-4 py-2 w-full">
     <h1>{{detail?.title}}</h1>
   </div>
   <video ref="videoPlayer"
@@ -9,7 +9,7 @@
     type="video/mp4"
     @play="onPlay"
     @pause="onPause"
-    @loadstart="onError"
+    @loadstart="onLoad"
     @loadedmetadata="onLoadMetaData"></video>
 </template>
 
@@ -18,6 +18,7 @@
   import { ComponentPublicInstance, Ref } from 'vue'
   import { MangaDetail, MangaHistory } from '~/types';
   import { defineProps } from 'vue';
+import nProgress from 'nprogress';
 
   const props = defineProps<{ autoPlay?: boolean }>()
 
@@ -52,13 +53,13 @@
       image_link: detail.image_link,
       progress: calculateProgress(videoPlayer),
       episode: detail!.current_episode.number,
-      detail_link: ``,
       source: detail.source,
       subtitle: detail.subtitle
     })
   }
 
-  function onError(e: any) {
+  function onLoad(e: any) {
+    nProgress.start()
 
     if (tryNumber < 1) {
       tryNumber++
@@ -75,6 +76,8 @@
   }
 
   function onLoadMetaData(e: any) {
+    nProgress.done()
+
     visible.value = true
 
     continueWatching(detail, history.value, videoPlayer.value)
@@ -108,6 +111,12 @@
 </script>
 
 <style>
+  .manga-detail-title {
+    height: 200px;
+    text-align: start;
+    background: rgb(0,0,0);
+    background: linear-gradient(180deg, rgba(0,0,0,.8) 0%, rgba(255,255,255,0) 100%);
+  }
 
   video {
     object-fit: cover;

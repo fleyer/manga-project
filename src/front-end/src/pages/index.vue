@@ -66,8 +66,9 @@ onMounted(() => {
     height: 100%;
     justify-content: center;
     align-items: center;
-    color: #d9d9d9;
+    color: white;
     text-shadow: -1px -1px 1px rgba(255,255,255,.1), 1px 1px 1px rgba(0,0,0,.5);
+    z-index: 10;
   }
 
   div.manga-play-button {
@@ -135,19 +136,25 @@ onMounted(() => {
     text-align: start;
     color: rgb(242, 241, 241);
     text-shadow: -1px -1px 1px rgba(158, 156, 156, 0.023), 1px 1px 1px rgba(0, 0, 0, 0.691);
+    display:none
   }
 
+  .manga-item:hover .manga-title {
+    display: block;
+  }
   .manga-subtitle {
     position: absolute;
     top: 0;
     right: 0;
     visibility: hidden;
+    z-index: 10;
   }
 
   .manga-episode {
     position: absolute;
     bottom: 0;
     right: 0;
+    z-index: 10;
   }
 
   .manga-episode .badge {

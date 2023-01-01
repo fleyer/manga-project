@@ -41,5 +41,6 @@
     min-width: 300px;
     margin: 4px;
     position: relative;
+    overflow: hidden;
   }
 </style>
