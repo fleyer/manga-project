@@ -3,7 +3,7 @@
     <h1>{{detail?.title}}</h1>
   </div>
   <video ref="videoPlayer"
-    :class="{visible: visible}"
+    :class="{visible: visible, "video-player": true}"
     controls
     :src="activeLink"
     type="video/mp4"
@@ -118,7 +118,7 @@ import nProgress from 'nprogress';
     background: linear-gradient(180deg, rgba(0,0,0,.8) 0%, rgba(255,255,255,0) 100%);
   }
 
-  video {
+  video.video-player {
     object-fit: cover;
     opacity: 0;
     -webkit-transition: opacity 0.3s ease-in-out;

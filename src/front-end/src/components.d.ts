@@ -16,7 +16,5 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Section: typeof import('./components/Section.vue')['default']
-    SectionItem: typeof import('./components/view/SectionItem.vue')['default']
-    VideoPlaye: typeof import('./components/VideoPlaye.vue')['default']
   }
 }
