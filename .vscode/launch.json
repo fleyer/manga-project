@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense para saber los atributos posibles.
+    // Mantenga el puntero para ver las descripciones de los existentes atributos.
+    // Para más información, visite: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach by Process ID",
+            "processId": "${command:PickProcess}",
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+        {
+            "type": "node",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "runtimeVersion": "18",
+            "request": "launch",
+            "name": "Start fastify",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeArgs": [
+                "--inspect"
+            ],
+            "program": "${workspaceFolder}/src/back-end/node_modules/fastify-cli/cli.js",
+            "args": [
+                "start",
+                "-w",
+                "--ignore-watch='test .vscode'",
+                "--port 8080",
+                "--address 0.0.0.0",
+                "-l",
+                "debug",
+                "${workspaceFolder}/src/back-end/server.mjs"
+            ]
+        }
+    ]
+}

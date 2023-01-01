@@ -7,9 +7,10 @@ export default async function (fastify, opts) {
 
   })
 
-  fastify.get('/api/mangas/:mangaId', async (request, reply) => {
-    const { mangaId } = request.params
-    return mangaService.getDetail(mangaId)
+  fastify.get('/api/mangas/:source/:mangaId', async (request, reply) => {
+    const { mangaId, source } = request.params
+
+    return mangaService.getDetail(source,mangaId)
 
   })
 

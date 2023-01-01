@@ -6,6 +6,7 @@ export interface Manga {
   id: string,
   title: string,
   manga_title: string,
+  manga_id: string,
   source: string,
   image_link: string,
   subtitle: string,
@@ -14,8 +15,10 @@ export interface Manga {
 }
 
 export type MangaDetail = {
+  id: string,
   title: string,
   manga_title: string,
+  manga_id: string,
   image_link: string,
   episodes: Episode[],
   current_episode: PlayerInfo,

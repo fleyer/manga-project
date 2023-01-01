@@ -45,15 +45,16 @@
 
   function updateProgress(detail : MangaDetail, videoPlayer : HTMLVideoElement){
     isPlaying.value && pushHistory({
-      id: detail.title,
-      title: detail!.title,
-      manga_title: detail!.manga_title,
-      image_link: detail!.image_link,
+      id: detail.id,
+      title: detail.title,
+      manga_title: detail.manga_title,
+      manga_id: detail.manga_id,
+      image_link: detail.image_link,
       progress: calculateProgress(videoPlayer),
       episode: detail!.current_episode.number,
       detail_link: ``,
-      source: detail!.source,
-      subtitle: detail!.subtitle
+      source: detail.source,
+      subtitle: detail.subtitle
     })
   }
 

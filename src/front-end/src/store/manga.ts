@@ -38,7 +38,9 @@ export const useMangaStore = defineStore('manga', () => {
 
   async function loadMangaDetail(id : string) : Promise<MangaDetail|undefined> {
     const currentEpisode = parseInt(id.split('-').slice(-2)[0])
-    detail.value = await fetch(`/api/mangas/${id}`)
+    const [source,...rawId] = id.split('-')
+
+    detail.value = await fetch(`/api/mangas/${source}/${rawId.join('-')}`)
       .then( r => r.json())
       .then( detail => ({
         ...detail,
