@@ -1,6 +1,7 @@
 {
 
     "scripts":{
+        "build": "cd src/front-end/ && npm install && vite-ssg build",
         "start": "cd src/back-end/ && node server.mjs"
     }
 }

@@ -1,8 +1,17 @@
+import fastifyStatic from '@fastify/static'
 import Fastify from 'fastify'
+import mangaService from './service/mangas.mjs'
+import path from 'node:path'
+import * as url from 'url';
+
 const fastify = Fastify({
   logger: true
 })
-import mangaService from './service/mangas.mjs'
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+
+fastify.register(fastifyStatic, {
+  root: path.join(__dirname, './../front-end/dist')
+})
 
 fastify.get('/api/mangas', async (request, reply) => {
   return mangaService.getAll()

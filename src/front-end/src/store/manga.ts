@@ -28,7 +28,7 @@ export const useMangaStore = defineStore('manga', () => {
   }
 
   async function loadMangas() {
-    const mangaJson: Manga[] = await fetch(`${import.meta.env.VITE_API_URL}/api/mangas`).then(r => r.json())
+    const mangaJson: Manga[] = await fetch(`/api/mangas`).then(r => r.json())
 
     mangas.push(...mangaJson)
 
@@ -39,7 +39,7 @@ export const useMangaStore = defineStore('manga', () => {
     const currentEpisode = parseInt(id.split('-').slice(-2)[0])
     const [source, ...rawId] = id.split('-')
 
-    detail.value = await fetch(`${import.meta.env.VITE_API_URL}/api/mangas/${source}/${rawId.join('-')}`)
+    detail.value = await fetch(`/api/mangas/${source}/${rawId.join('-')}`)
       .then(r => r.json())
       .then(detail => ({
         ...detail,
