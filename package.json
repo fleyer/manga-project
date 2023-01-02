@@ -1,5 +1,6 @@
 {
-  "dependencies": {
-    "@vueuse/core": "^9.2.0"
-  }
+
+    "scripts":{
+        "start": "cd src/back-end/ && node server.mjs"
+    }
 }

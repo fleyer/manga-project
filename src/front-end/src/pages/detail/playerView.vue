@@ -87,12 +87,6 @@ function continueWatching(
 function calculateProgress(videoPlayer: HTMLVideoElement): number {
   return videoPlayer ? Math.round((videoPlayer.currentTime / videoPlayer.duration) * 100) : 0
 }
-
-// function setRef(elem: ComponentPublicInstance<HTMLDivElement>) {
-//   elem?.classList.contains('manga-episode-active') && activeEpisodeElement.value.push(elem)
-
-//   return elem
-// }
 </script>
 
 <template>
@@ -101,7 +95,7 @@ function calculateProgress(videoPlayer: HTMLVideoElement): number {
   </div>
   <video
     ref="videoPlayer"
-    class="videoPlayer" :class="{ visible }"
+    class="video-player" :class="{ visible }"
     controls
     :src="activeLink"
     type="video/mp4"

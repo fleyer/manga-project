@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "fastify start server.mjs --watch --port 8080 --address 0.0.0.0 -V -l debug"
+    "dev": "fastify start server.mjs --watch --port 8080 --address 0.0.0.0 -V -l debug",
+    "start": "node server.mjs"
   },
   "author": "",
   "license": "ISC",
