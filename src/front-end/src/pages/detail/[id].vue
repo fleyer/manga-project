@@ -1,8 +1,43 @@
+<script setup lang="ts">
+import { computed, watchEffect } from 'vue'
+import { onBeforeRouteLeave, useRoute } from 'vue-router'
+import PlayerView from './playerView.vue'
+
+const props = defineProps<{ id: string }>()
+const mangaStore = useMangaStore()
+const { loadMangaDetail, loadMangaPlayer, setMangaDetail, setMangaPlayer, setManga } = mangaStore
+const route = useRoute()
+const activeEpisodeElement = ref<HTMLDivElement[]>([])
+const tryNumber = 0
+
+const parsedAutoPlay = computed(() => {
+  return route.query.autoPlay === 'true'
+})
+
+watchEffect(() => {
+  const target = activeEpisodeElement.value[0]
+
+  target?.scrollIntoView()
+})
+
+watchEffect(async () => {
+  await loadMangaDetail(props.id)
+    .then(() => loadMangaPlayer(tryNumber))
+})
+
+onBeforeRouteLeave(() => {
+  // if(calculateProgress(videoPlayer) > 0) updateHistory(detail.value, videoPlayer)
+
+  setManga(undefined)
+  setMangaDetail(undefined)
+  setMangaPlayer(undefined)
+})
+</script>
+
 <template>
   <div class="manga-detail-container">
     <section class="manga-player">
-
-      <player-view :auto-play="parsedAutoPlay"></player-view>
+      <PlayerView :auto-play="parsedAutoPlay" />
     </section>
 
     <!-- <section class="manga-episode-navigator">
@@ -30,54 +65,10 @@
       </ul>
     </section> -->
   </div>
-
-
 </template>
 
-<script setup lang="ts">
-  import { watchEffect, computed } from 'vue'
-  import { onBeforeRouteLeave } from 'vue-router';
-  import PlayerView from './playerView.vue';
-  import { useRoute } from 'vue-router';
-
-  const mangaStore =  useMangaStore()
-  const props = defineProps<{ id: string }>()
-  const { loadMangaDetail, loadMangaPlayer, setMangaDetail, setMangaPlayer, setManga } = mangaStore
-  const route = useRoute()
-  const autoPlay = ref<boolean>(false)
-  const activeEpisodeElement = ref<HTMLDivElement[]>([])
-  let tryNumber : number = 0
-
-  const parsedAutoPlay = computed(() => {
-    return autoPlay.value = route.query.autoPlay === "true"
-  })
-
-  watchEffect(() =>{
-    let target = activeEpisodeElement.value[0]
-
-    target?.scrollIntoView()
-  })
-
-  watchEffect(async () => {
-    await loadMangaDetail(props.id)
-      .then( () => loadMangaPlayer(tryNumber))
-      .catch( e => console.log('can\'t load player'))
-  })
-
-  onBeforeRouteLeave(() => {
-    // if(calculateProgress(videoPlayer) > 0) updateHistory(detail.value, videoPlayer)
-
-    setManga(undefined)
-    setMangaDetail(undefined)
-    setMangaPlayer(undefined)
-
-  })
-
-</script>
-
 <style lang="css">
-
-  .manga-detail-container {
+.manga-detail-container {
     height: 100%;
   }
 

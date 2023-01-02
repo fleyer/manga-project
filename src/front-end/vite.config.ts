@@ -19,8 +19,8 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:8080',
-        changeOrigin: true
-      }
+        changeOrigin: true,
+      },
     },
 
   },
@@ -141,13 +141,13 @@ export default defineConfig({
   ],
 
   // https://github.com/vitest-dev/vitest
-  test: {
-    include: ['test/**/*.test.ts'],
-    environment: 'jsdom',
-    deps: {
-      inline: ['@vue', '@vueuse', 'vue-demi'],
-    },
-  },
+  // test: {
+  //   include: ['test/**/*.test.ts'],
+  //   environment: 'jsdom',
+  //   deps: {
+  //     inline: ['@vue', '@vueuse', 'vue-demi'],
+  //   },
+  // },
 
   // https://github.com/antfu/vite-ssg
   ssgOptions: {

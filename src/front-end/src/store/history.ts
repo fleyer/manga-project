@@ -1,22 +1,22 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import { Ref } from 'vue'
-import { MangaHistory } from '~/types'
+import type { Ref } from 'vue'
+import type { MangaHistory } from '~/types'
 
 export const useHistoryStore = defineStore('history', () => {
-  const historyRecords : Ref<Record<string,MangaHistory>>= ref(useStorage('history',{}))
+  const historyRecords: Ref<Record<string, MangaHistory>> = ref(useStorage('history', {}))
 
-  function pushHistory(newHistory : MangaHistory) {
+  function pushHistory(newHistory: MangaHistory) {
     historyRecords.value[newHistory.manga_id] = newHistory
   }
 
-  function deleteHistory(item: MangaHistory){
+  function deleteHistory(item: MangaHistory) {
     delete historyRecords.value[item.manga_id]
   }
 
   return {
     history: historyRecords,
     pushHistory,
-    deleteHistory
+    deleteHistory,
   }
 })
 

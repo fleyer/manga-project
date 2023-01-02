@@ -1,46 +1,49 @@
 <script setup lang="ts">
-  import { storeToRefs } from 'pinia';
-  import { ComputedRef } from 'vue';
-  import { MangaHistory } from '~/types';
-  import Progress from '../Progress.vue'
-  import { getDetailLink } from '~/model/manga'
+import { storeToRefs } from 'pinia'
+import type { ComputedRef } from 'vue'
+import Progress from '../Progress.vue'
+import type { MangaHistory } from '~/types'
+import { getDetailLink } from '~/model/manga'
 
-  const historyStore = useHistoryStore()
-  const { history } = storeToRefs(historyStore)
+const historyStore = useHistoryStore()
+const { history } = storeToRefs(historyStore)
 
-  const historyList : ComputedRef<MangaHistory[]> = computed(() => {
-    return Object.keys(history.value || []).map(key => (history.value[key]))
-  })
+const historyList: ComputedRef<MangaHistory[]> = computed(() => {
+  return Object.keys(history.value || []).map(key => (history.value[key]))
+})
 
-  const deleteHistoryItem = (event : Event, item: MangaHistory) => {
-    event.preventDefault()
+const deleteHistoryItem = (event: Event, item: MangaHistory) => {
+  event.preventDefault()
 
-    historyStore.deleteHistory(item)
-  }
-
+  historyStore.deleteHistory(item)
+}
 </script>
 
 <template>
   <Section :items="historyList" :custom-css-classes="['overflow-x-auto']">
-    <template #title>Continue watching</template>
-    <template #item="{item}"><router-link :to="getDetailLink(item)">
-      <div class="manga-history w-full h-full">
-        <div class="manga-history-title mb-3">
-          <h1>{{item.title}}</h1>
+    <template #title>
+      Continue watching
+    </template>
+    <template #item="{ item }">
+      <router-link :to="getDetailLink(item)">
+        <div class="manga-history w-full h-full">
+          <div class="manga-history-title mb-3">
+            <h1>{{ item.title }}</h1>
+          </div>
+          <div class="manga-history-progress">
+            <Progress :progress="item.progress" />
+          </div>
+          <div class="manga-history-menu items-center" @click="(event) => deleteHistoryItem(event, item)">
+            <div i-carbon-trash-can />
+          </div>
         </div>
-        <div class="manga-history-progress"><Progress :progress="item.progress"></Progress></div>
-        <div class="manga-history-menu items-center" @click="(event) => deleteHistoryItem(event,item)">
-          <div i-carbon-trash-can></div>
-        </div>
-      </div>
-
-      </router-link></template>
+      </router-link>
+    </template>
   </Section>
 </template>
 
 <style>
-
-  .manga-history-menu {
+.manga-history-menu {
     position: absolute;
     top: 0;
     right: 0;

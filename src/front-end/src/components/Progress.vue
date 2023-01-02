@@ -1,13 +1,13 @@
 <script setup lang="ts">
-  const props = defineProps<{ progress: number }>()
-  const computedPercentage = computed( () => {
-    return props.progress > 5 ? props.progress : 5
-  })
+const props = defineProps<{ progress: number }>()
+const computedPercentage = computed(() => {
+  return props.progress > 5 ? props.progress : 5
+})
 </script>
 
 <template>
   <div class="progress">
-    <div class="progress-bar" :style="{ width: `${computedPercentage}%`}"></div>
+    <div class="progress-bar" :style="{ width: `${computedPercentage}%` }" />
   </div>
 </template>
 

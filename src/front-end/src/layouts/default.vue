@@ -5,9 +5,7 @@
 </template>
 
 <style>
-
 .full-height {
   height: 100%;
 }
-
 </style>
