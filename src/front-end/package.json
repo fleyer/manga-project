@@ -17,7 +17,7 @@
   "dependencies": {
     "@unocss/reset": "^0.45.8",
     "@vueuse/core": "^9.1.0",
-    "@vueuse/head": "^0.7.9",
+    "@vueuse/head": "^1.0.22",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
@@ -54,7 +54,7 @@
     "vite-plugin-pwa": "^0.14.0",
     "vite-plugin-vue-layouts": "^0.7.0",
     "vite-plugin-vue-markdown": "^0.22.0",
-    "vite-ssg": "^0.20.2",
+    "vite-ssg": "^0.22.1",
     "vite-ssg-sitemap": "^0.3.1",
     "vitest": "^0.21.0",
     "vue-tsc": "^0.39.5"
