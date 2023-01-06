@@ -3,12 +3,11 @@ import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
 import generateSitemap from 'vite-ssg-sitemap'
-import Layouts from 'vite-plugin-vue-layouts'
 import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Markdown from 'vite-plugin-vue-markdown'
 import { VitePWA } from 'vite-plugin-pwa'
-import VueI18n from '@intlify/vite-plugin-vue-i18n'
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 import Inspect from 'vite-plugin-inspect'
 import LinkAttributes from 'markdown-it-link-attributes'
 import Unocss from 'unocss/vite'
@@ -43,7 +42,6 @@ export default defineConfig({
     }),
 
     // https://github.com/JohnCampionJr/vite-plugin-vue-layouts
-    Layouts(),
 
     // https://github.com/antfu/unplugin-auto-import
     AutoImport({
@@ -129,7 +127,7 @@ export default defineConfig({
     }),
 
     // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
-    VueI18n({
+    VueI18nPlugin({
       runtimeOnly: true,
       compositionOnly: true,
       include: [path.resolve(__dirname, 'locales/**')],

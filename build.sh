@@ -1,10 +1,7 @@
 #!/bin/bash
+npm cache clean --force
 
-cd src/front-end/ 
-npm install --legacy-peer-deps 
-npm run build 
-rm -Rf node_modules
-npm prune --omit=dev --legacy-peer-deps
+npm --prefix src/front-end install
+npm --prefix src/front-end run build 
 
-cd ../back-end/
-npm install 
+npm --prefix src/back-end install 
