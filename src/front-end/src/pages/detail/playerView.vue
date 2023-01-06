@@ -48,8 +48,8 @@ function onLoad(e: any) {
   nProgress.start()
 
   if (tryNumber < 1) {
-    tryNumber++
     detail && loadMangaPlayer(tryNumber)
+    tryNumber++
   }
 }
 
@@ -67,6 +67,15 @@ function onLoadMetaData(e: any) {
   visible.value = true
 
   continueWatching(detail, history.value, videoPlayer.value)
+}
+
+function onError(e: any) {
+  if (e.target.error.code === 4) {
+    if (tryNumber < 2) {
+      detail && loadMangaPlayer(tryNumber)
+      tryNumber++
+    }
+  }
 }
 
 function continueWatching(
@@ -103,6 +112,7 @@ function calculateProgress(videoPlayer: HTMLVideoElement): number {
     @pause="onPause"
     @loadstart="onLoad"
     @loadedmetadata="onLoadMetaData"
+    @error="onError"
   />
 </template>
 

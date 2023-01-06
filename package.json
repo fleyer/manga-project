@@ -1,7 +1,7 @@
 {
 
     "scripts":{
-        "build": "./build.sh",
+        "build": "./build.sh && rm -Rf ./src/front-end/node_modules",
         "start": "cd src/back-end/ && node server.mjs"
     }
 }

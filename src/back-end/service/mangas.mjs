@@ -23,6 +23,12 @@ const service = {
 
     return await playerService.getPlayerProvider(source)
       .getVideoPlayer(link)
+  },
+
+  extractVideoLink: async (html,{source}) => {
+
+    return await playerService.getPlayerProvider(source)
+      .extractVideoLink(html)
   }
 
 }

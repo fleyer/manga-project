@@ -1,42 +1,36 @@
 import fastifyStatic from '@fastify/static'
-import Fastify from 'fastify'
 import mangaService from './service/mangas.mjs'
 import path from 'node:path'
 import * as url from 'url';
 
-const fastify = Fastify({
-  logger: true
-})
-const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
+export default function(fastify,options,next){
 
-fastify.register(fastifyStatic, {
-  root: path.join(__dirname, './../front-end/dist')
-})
+  const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
-fastify.get('/api/mangas', async (request, reply) => {
-  return mangaService.getAll()
+  fastify.register(fastifyStatic, {
+    root: path.join(__dirname, './../front-end/dist')
+  })
+  
+  fastify.get('/api/mangas', async (request, reply) => {
+    return mangaService.getAll()
+  
+  })
+  
+  fastify.get('/api/mangas/:source/:mangaId', async (request, reply) => {
+    const { mangaId, source } = request.params
+  
+    return mangaService.getDetail(source,mangaId)
+  
+  })
+  
+  fastify.get('/api/player', async (request, reply) => {
+    return reply.redirect(301,await mangaService.getVideoPlayer(request.query))
+  })
 
-})
+  fastify.post('/api/player', async (request, reply) => {
+    return await mangaService.extractVideoLink(request.body,request.query)
+  })
 
-fastify.get('/api/mangas/:source/:mangaId', async (request, reply) => {
-  const { mangaId, source } = request.params
-
-  return mangaService.getDetail(source,mangaId)
-
-})
-
-fastify.get('/api/player', async (request, reply) => {
-  return reply.redirect(301,await mangaService.getVideoPlayer(request.query))
-})
-
-const start = async () => {
-  try {
-    await fastify.listen({ port: 3000 })
-  } catch (err) {
-    fastify.log.error(err)
-    process.exit(1)
-  }
+  next()
 }
-
-start()
 

@@ -43,4 +43,8 @@ export interface _MangaHistory extends Manga {
   progress: number
 }
 
+export interface MangaService {
+  loadPlayer: (detail: MangaDetail, link: string, source: string) => Promise<string>
+}
+
 export type MangaHistory = Omit<_MangaHistory, 'detail_link'>

@@ -1,4 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import service from '~/service'
 import type { Episode, Manga, MangaDetail, PlayerInfo } from '~/types'
 
 export const useMangaStore = defineStore('manga', () => {
@@ -28,7 +29,7 @@ export const useMangaStore = defineStore('manga', () => {
   }
 
   async function loadMangas() {
-    const mangaJson: Manga[] = await fetch(`/api/mangas`).then(r => r.json())
+    const mangaJson: Manga[] = await fetch('/api/mangas').then(r => r.json())
 
     mangas.push(...mangaJson)
 
@@ -51,13 +52,16 @@ export const useMangaStore = defineStore('manga', () => {
     return detail.value
   }
 
-  function loadMangaPlayer(index?: number) {
+  async function loadMangaPlayer(index?: number) {
     const i = index || 0
-    const currentDetail = detail.value
-    const source = extractSource(currentDetail?.current_episode.player_link[i])
+    const currentDetail = detail.value!
+    const currentLink = currentDetail.current_episode.player_link[i]
+    const source = extractSource(currentLink)
 
-    if (currentDetail)
-      activeLink.value = `/api/player?playerId=${btoa(currentDetail.current_episode.player_link[i])}&source=${source}`
+    activeLink.value = await service.getService(source)
+      .loadPlayer(currentDetail, currentLink, source)
+
+    // activeLink.value = `/api/player?playerId=${btoa(currentDetail.current_episode.player_link[i])}&source=${source}`
   }
 
   function next(current_episode_id: string): Episode {
