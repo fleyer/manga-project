@@ -2,6 +2,6 @@
 
     "scripts":{
         "build": "./build.sh",
-        "start": "npm --prefix=src/back-end start"
+        "start": "npm --prefix=src/back-end start --loglevel=verbose"
     }
 }
