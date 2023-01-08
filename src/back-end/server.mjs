@@ -10,7 +10,7 @@ export default function(fastify,options,next){
   fastify.register(fastifyStatic, {
     root: path.join(__dirname, './../front-end/dist')
   })
-  
+
   fastify.get('/api/mangas', async (request, reply) => {
     return mangaService.getAll()
   
