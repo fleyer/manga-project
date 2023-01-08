@@ -2,6 +2,7 @@
 
     "scripts":{
         "build": "./build.sh",
+        "postbuild": "npm prun --prefix src/front-end",
         "start": "cd src/back-end/ && npm run start"
     }
 }
