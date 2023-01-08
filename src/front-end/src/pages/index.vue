@@ -13,40 +13,42 @@ onMounted(() => {
 </script>
 
 <template>
-  <NewEpisode />
+  <div class="p-6">
+    <NewEpisode />
 
-  <History />
+    <History />
 
-  <section class="content">
-    <header class="manga-home-header">
-      <h1>New episodes :</h1>
-    </header>
-    <div class="manga-list">
-      <div v-for="manga in mangas" :key="manga.id" class="manga-item">
-        <router-link v-slot="{ navigate }" :to="`detail/${manga.source}-${manga.id}`" custom>
-          <div role="link" @click="navigate">
-            <img :src="manga.image_link" loading="lazy">
-            <div class="manga-episode">
-              <span class="badge">{{ manga.episode }}</span>
-            </div>
-            <div class="manga-subtitle">
-              <span class="badge">{{ manga.subtitle }}</span>
-            </div>
-
-            <router-link v-slot="{ navigate: autoPlayNavigate }" :to="`detail/${manga.source}-${manga.id}?autoPlay=true`" custom>
-              <div class="manga-play-button" role="link">
-                <span i-carbon-play-filled @click="autoPlayNavigate" />
+    <section class="content">
+      <header class="manga-home-header">
+        <h1>New episodes :</h1>
+      </header>
+      <div class="manga-list">
+        <div v-for="manga in mangas" :key="manga.id" class="manga-item">
+          <router-link v-slot="{ navigate }" :to="`detail/${manga.source}-${manga.id}`" custom>
+            <div role="link" @click="navigate">
+              <img :src="manga.image_link" loading="lazy">
+              <div class="manga-episode">
+                <span class="badge">{{ manga.episode }}</span>
               </div>
-            </router-link>
+              <div class="manga-subtitle">
+                <span class="badge">{{ manga.subtitle }}</span>
+              </div>
 
-            <div class="manga-content">
-              <span class="manga-title">{{ manga.manga_title }}</span>
+              <router-link v-slot="{ navigate: autoPlayNavigate }" :to="`detail/${manga.source}-${manga.id}?autoPlay=true`" custom>
+                <div class="manga-play-button" role="link">
+                  <span i-carbon-play-filled @click="autoPlayNavigate" />
+                </div>
+              </router-link>
+
+              <div class="manga-content">
+                <span class="manga-title">{{ manga.manga_title }}</span>
+              </div>
             </div>
-          </div>
-        </router-link>
+          </router-link>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>
 
 <style>
