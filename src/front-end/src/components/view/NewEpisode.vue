@@ -14,7 +14,7 @@ const newEpisodelist = computed(() => {
 </script>
 
 <template>
-  <Section :items="newEpisodelist" :custom-css-classes="['overflow-x-auto']">
+  <Section class="content" :items="newEpisodelist" :custom-css-classes="['overflow-x-auto']">
     <template #title>
       New episodes
     </template>

@@ -20,7 +20,7 @@ const deleteHistoryItem = (event: Event, item: MangaHistory) => {
 </script>
 
 <template>
-  <Section :items="historyList" :custom-css-classes="['overflow-x-auto']">
+  <Section class="content" :items="historyList" :custom-css-classes="['overflow-x-auto']">
     <template #title>
       Continue watching
     </template>

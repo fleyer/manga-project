@@ -17,7 +17,7 @@ onMounted(() => {
 
   <History />
 
-  <section>
+  <section class="content">
     <header class="manga-home-header">
       <h1>New episodes :</h1>
     </header>
