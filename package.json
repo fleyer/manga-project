@@ -2,7 +2,7 @@
 
     "scripts":{
         "build": "./build.sh",
-        "postbuild": "npm prun --prefix src/front-end --omit=dev",
+        "postbuild": "npm prune --prefix src/front-end --omit=dev",
         "start": "cd src/back-end/ && npm run start"
     }
 }

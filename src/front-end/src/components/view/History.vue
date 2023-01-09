@@ -9,7 +9,9 @@ const historyStore = useHistoryStore()
 const { history } = storeToRefs(historyStore)
 
 const historyList: ComputedRef<MangaHistory[]> = computed(() => {
-  return Object.keys(history.value || []).map(key => (history.value[key]))
+  return Object.keys(history.value || [])
+    .map(key => (history.value[key]))
+    .filter( historyItem => historyItem.progress < 90)
 })
 
 const deleteHistoryItem = (event: Event, item: MangaHistory) => {
