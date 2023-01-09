@@ -7,8 +7,12 @@ export default function(fastify,options,next){
 
   const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
+  fastify.setNotFoundHandler((request, reply) => {
+    reply.sendFile('index.html');
+  });
+
   fastify.register(fastifyStatic, {
-    root: path.join(__dirname, './../front-end/dist')
+    root: path.join(__dirname, '../front-end/dist')
   })
 
   fastify.get('/api/mangas', async (request, reply) => {
