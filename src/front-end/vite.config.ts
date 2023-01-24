@@ -20,6 +20,10 @@ export default defineConfig({
         target: 'http://127.0.0.1:3000',
         changeOrigin: true,
       },
+      '/proxy': {
+        target: 'http://127.0.0.1:3000',
+        changeOrigin: true,
+      },
     },
 
   },
@@ -51,7 +55,7 @@ export default defineConfig({
         'vue-i18n',
         'vue/macros',
         '@vueuse/head',
-        '@vueuse/core',
+        '@vueuse/core'
       ],
       dts: 'src/auto-imports.d.ts',
       dirs: [

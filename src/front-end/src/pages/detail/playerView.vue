@@ -5,7 +5,7 @@ import { defineProps } from 'vue'
 import nProgress from 'nprogress'
 import type { MangaDetail, MangaHistory } from '~/types'
 
-const props = defineProps<{ autoPlay?: boolean }>()
+const props = defineProps<{ autoPlay?: { type: boolean, default: false} }>()
 
 const mangaStore = useMangaStore()
 const historyStore = useHistoryStore()
@@ -18,7 +18,7 @@ const { pushHistory } = historyStore
 // const activeEpisodeElement = ref<HTMLDivElement[]>([])
 const videoPlayer = ref<HTMLVideoElement>()
 const visible = ref<boolean>(false)
-const isPlaying = ref<boolean>(false)
+const isPlaying = ref<boolean>(!!props.autoPlay)
 let tryNumber = 0
 
 watchEffect((onInvalidate) => {
@@ -96,16 +96,25 @@ function continueWatching(
 function calculateProgress(videoPlayer: HTMLVideoElement): number {
   return videoPlayer ? Math.round((videoPlayer.currentTime / videoPlayer.duration) * 100) : 0
 }
+
+function play(player : HTMLVideoElement){
+  (player.paused ? player.play : player.pause).bind(player)()
+}
 </script>
 
 <template>
-  <div v-show="!isPlaying" class="manga-detail-title absolute px-4 py-2 w-full">
-    <h1>{{ detail?.title }}</h1>
+  <div class="manga-detail-title absolute px-4 py-2 w-full flex items-start">
+    <div class="flex items-center z-50">
+      <button class="btn bg-transparent hover:bg-transparent" @click="$router.back()">
+        <div class="text-xl font-semibold" i-carbon:chevron-left></div>
+      </button>
+      <h1>{{ detail?.title }}</h1>
+    </div>
   </div>
   <video
     ref="videoPlayer"
     class="video-player" :class="{ visible }"
-    controls
+    no-controls
     :src="activeLink"
     type="video/mp4"
     @play="onPlay"
@@ -114,6 +123,13 @@ function calculateProgress(videoPlayer: HTMLVideoElement): number {
     @loadedmetadata="onLoadMetaData"
     @error="onError"
   />
+  <div class="controls absolute bottom-0 py-4 px-6 text-lg w-full flex items-end">
+    <button class="btn bg-transparent hover:bg-transparent" ><div class="i-carbon:skip-back-filled"></div></button>
+    <button class="btn bg-transparent hover:bg-transparent" @click="play(videoPlayer!)">
+      <div :class="isPlaying ? 'i-carbon:pause-filled' : 'i-carbon:play-filled-alt'"></div>
+    </button>
+    <button class="btn bg-transparent hover:bg-transparent" ><div class="i-carbon:skip-forward-filled"></div></button>
+  </div>
 </template>
 
 <style>
@@ -122,6 +138,17 @@ function calculateProgress(videoPlayer: HTMLVideoElement): number {
     text-align: start;
     background: rgb(0,0,0);
     background: linear-gradient(180deg, rgba(0,0,0,.8) 0%, rgba(255,255,255,0) 100%);
+  }
+
+  .controls{
+    height: 200px;
+    text-align: start;
+    background: rgb(0,0,0);
+    background: linear-gradient(0deg, rgba(0,0,0,.8) 0%, rgba(255,255,255,0) 100%)
+  }
+
+  .controls > * {
+    /* background: white; */
   }
 
   video.video-player {

@@ -58,10 +58,10 @@ export const useMangaStore = defineStore('manga', () => {
     const currentLink = currentDetail.current_episode.player_link[i]
     const source = extractSource(currentLink)
 
-    activeLink.value = await service.getService(source)
-      .loadPlayer(currentDetail, currentLink, source)
+    // activeLink.value = await service.getService(source)
+    //   .loadPlayer(currentDetail, currentLink, source)
 
-    // activeLink.value = `/api/player?playerId=${btoa(currentDetail.current_episode.player_link[i])}&source=${source}`
+    activeLink.value = `/api/player?playerId=${window.btoa(currentDetail.current_episode.player_link[i])}&source=${source}`
   }
 
   function next(current_episode_id: string): Episode {
