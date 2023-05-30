@@ -26,7 +26,9 @@ onMounted(() => {
         <div v-for="manga in mangas" :key="manga.id" class="manga-item">
           <router-link v-slot="{ navigate }" :to="`detail/${manga.source}-${manga.id}`" custom>
             <div role="link" @click="navigate">
-              <img :src="manga.image_link" loading="lazy">
+              <div class="image-container">
+                <img :src="manga.image_link" loading="lazy">
+              </div>
               <div class="manga-episode">
                 <span class="badge">{{ manga.episode }}</span>
               </div>
@@ -54,6 +56,21 @@ onMounted(() => {
 <style>
   .manga-home-header {
     text-align: start;
+  }
+
+  div.image-container {
+
+    width: 100%;
+
+  }
+
+  div.image-container img {
+    background-position: center center;
+    background-size: cover;
+    object-fit: cover;
+    position: absolute;
+    width: 100%;
+    height: 100%;
   }
 
   div.manga-play-button {

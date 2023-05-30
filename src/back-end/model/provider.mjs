@@ -1,6 +1,7 @@
 const providerSourceMap = {
     'MAVANIMES': 1,
-    'GUMGUM': 2
+    'GUMGUM': 2,
+    'NEKO': 3
 }
 
 export default {

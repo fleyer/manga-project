@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "fastify start server.mjs --watch --port 3000 --address 0.0.0.0 -V -l debug | pino-pretty",
+    "dev": "fastify start server.mjs --watch --port 3000 --options --address 0.0.0.0 -V -l debug | pino-pretty",
     "start": "fastify start server.mjs"
   },
   "author": "",

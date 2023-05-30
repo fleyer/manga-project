@@ -5,6 +5,7 @@ function createDocument (
     subtitle,
     episode,
     source,
+    externalLink,
     image_link,
     optionalId
 ) {
@@ -18,6 +19,7 @@ function createDocument (
         subtitle,
         episode: isNaN(episode) ? 'movie' : episode,
         source,
+        externalLink,
         image_link,
         detail_link: `/api/mangas/${source}/${id}`
     }

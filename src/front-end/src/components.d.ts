@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
     Footer: typeof import('./components/Footer.vue')['default']
     History: typeof import('./components/view/History.vue')['default']
     NewEpisode: typeof import('./components/view/NewEpisode.vue')['default']
+    Player: typeof import('./components/view/Player.vue')['default']
     Progress: typeof import('./components/Progress.vue')['default']
     README: typeof import('./components/README.md')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

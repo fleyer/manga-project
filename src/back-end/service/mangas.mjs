@@ -1,14 +1,17 @@
 import provider from './provider/index.mjs'
 import providerModel from '../model/provider.mjs'
 import playerService from './player/index.mjs'
+import utils from '../utils/index.mjs'
+import http from 'node:http'
+import https from 'node:https'
+import { URL } from 'node:url'
 
 const service = {
 
   getAll: async () => {
 
-    return await Promise.all(provider.getAllMangas())
-      .then( requests => requests.flatMap( r => r))
-      .then( mangas => mangas.reduce( (acc,curr) => ({ ...acc, [curr['id']]: curr}),{}))
+    return await provider.getAllMangas()
+      .then( mangas => mangas.reduce( (acc,curr) => utils.mergeMangas(acc,curr),{}))
       .then( mangas => Object.values(mangas))
       .then( mangas => mangas.map(providerModel.transformSource))
   },
@@ -29,7 +32,22 @@ const service = {
 
     return await playerService.getPlayerProvider(source)
       .extractVideoLink(html)
-  }
+  },
+
+  // getImage: (internalImage) => {
+  //   const imageLink = Buffer.from(internalImage,'base64').toString()
+  //   const url = new URL(imageLink)
+  //   const fn = {
+  //     'http': http.get,
+  //     'https': https.get,
+  //   }
+  //   return fn[url.protocol](imageLink)
+  //     .then(async r => {
+  //       // const image = Buffer.from(await r.blob().then( b => b.arrayBuffer()));
+  //       console.log(r.data)
+  //       return { image: r.data, contentType: r.headers.get('content-type')}
+  //     })
+  // }
 
 }
 
